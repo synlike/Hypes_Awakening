@@ -2,16 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerIdleState : BaseState<PlayerStateMachine.PlayerState>
+public class PlayerIdleState : PlayerState
 {
-    public PlayerIdleState(PlayerStateMachine.PlayerState key) : base(key)
+    public PlayerIdleState(PlayerStateMachine context, PlayerStateMachine.EPlayerState key) : base(context, key)
     {
     }
 
     public override void EnterState()
     {
         Debug.Log("Player entered Idle State");
-        PlayerManager.Instance.animator.SetTrigger("Idle");
+        NextState = PlayerStateMachine.EPlayerState.IDLE;
     }
 
     public override void ExitState()
@@ -22,11 +22,22 @@ public class PlayerIdleState : BaseState<PlayerStateMachine.PlayerState>
     public override void UpdateState()
     {
         Debug.Log("Player is in Idle State");
+
+        if (Context.PlayerController.IsMovementPressed)
+        {
+            // Go To Run State
+            NextState = PlayerStateMachine.EPlayerState.RUN;
+        }
+        else
+        {
+            // Handle idle anim and behaviour
+            Context.PlayerAnimator.SetTrigger("Idle");
+        }
     }
 
-    public override PlayerStateMachine.PlayerState GetNextState()
+    public override PlayerStateMachine.EPlayerState GetNextState()
     {
-        return PlayerManager.Instance.NextState;
+        return base.GetNextState();
     }
 
     public override void OnTriggerEnter(Collider other)

@@ -5,10 +5,10 @@ using UnityEngine;
 
 public abstract class StateManager<EState> : MonoBehaviour where EState : Enum
 {
-    protected Dictionary<EState, BaseState<EState>> States = new Dictionary<EState, BaseState<EState>>();
+    public Dictionary<EState, BaseState<EState>> States { get; protected set; } = new Dictionary<EState, BaseState<EState>>();
     protected BaseState<EState> CurrentState;
 
-    protected bool IsTransitioningState = false;
+    protected bool IsSwitchingState = false;
 
     void Start()
     {
@@ -19,25 +19,25 @@ public abstract class StateManager<EState> : MonoBehaviour where EState : Enum
     {
         EState nextStateKey = CurrentState.GetNextState();
 
-        if(!IsTransitioningState && nextStateKey.Equals(CurrentState.StateKey))
+        if(!IsSwitchingState && nextStateKey.Equals(CurrentState.StateKey))
         {
             CurrentState.UpdateState();
         }
-        else if (!IsTransitioningState)
+        else if (!IsSwitchingState)
         {
-            TransitionToState(nextStateKey);
+            SwitchState(nextStateKey);
         }
     }
 
-    public void TransitionToState(EState stateKey)
+    public void SwitchState(EState stateKey)
     {
-        IsTransitioningState = true;
+        IsSwitchingState = true;
 
         CurrentState.ExitState();
         CurrentState = States[stateKey];
         CurrentState.EnterState();
 
-        IsTransitioningState = false;
+        IsSwitchingState = false;
     }
 
     private void OnTriggerEnter(Collider other)

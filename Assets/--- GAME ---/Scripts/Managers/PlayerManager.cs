@@ -10,7 +10,7 @@ public class PlayerManager : MonoBehaviour
 
     [SerializeField] private PlayerStateMachine playerStateMachine;
 
-    public PlayerStateMachine.PlayerState NextState { get; private set; } = PlayerStateMachine.PlayerState.IDLE;
+    public PlayerStateMachine.EPlayerState NextState { get; private set; } = PlayerStateMachine.EPlayerState.IDLE;
 
     void Awake()
     {
@@ -20,23 +20,23 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    public void Idle()
-    {
-        NextState = PlayerStateMachine.PlayerState.IDLE;
-    }
+    //public void Idle()
+    //{
+    //    NextState = PlayerStateMachine.EPlayerState.IDLE;
+    //}
 
-    public void Run()
-    {
-        NextState = PlayerStateMachine.PlayerState.RUN;
-    }
+    //public void Run()
+    //{
+    //    NextState = PlayerStateMachine.EPlayerState.RUN;
+    //}
 
-    public void Attack()
-    {
-        NextState = PlayerStateMachine.PlayerState.ATTACK;
-    }
+    //public void Attack()
+    //{
+    //    NextState = PlayerStateMachine.EPlayerState.ATTACK;
+    //}
 
-    public void Death()
-    {
-        NextState = PlayerStateMachine.PlayerState.DEATH;
-    }
+    //public void Death()
+    //{
+    //    NextState = PlayerStateMachine.EPlayerState.DEATH;
+    //}
 }
