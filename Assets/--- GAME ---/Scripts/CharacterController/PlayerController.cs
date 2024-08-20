@@ -7,28 +7,22 @@ using UnityEngine.Rendering;
 
 public class PlayerController : MonoBehaviour
 {
-    private CharacterController characterController;
-    private Animator playerAnimator;
-
     private PlayerInput playerInput;
-    private Vector2 currentMovementInput;
-    private Vector3 currentMovement;
-    private Vector3 oldMovement;
-    private Vector3 currentMovementAnimation;
     private float rotationFactorPerFrame = 10.0f;
     private float smoothMoveElapsedTime = 0.0f;
 
     [SerializeField] private float playerSpeed = 5.0f;
     [SerializeField] private float smoothMoveTime = 0.5f;
 
-    public bool IsMovementPressed {  get; private set; }
+    public bool IsMovementPressed { get; private set; }
+    public Vector2 CurrentMovementInput { get; private set; }
+    public Vector3 CurrentMovement { get; private set; }
+    //public Vector3 CurrentMovementAnimation { get; private set; }
 
 
     private void Awake()
     {
         playerInput = new PlayerInput();
-        characterController = GetComponent<CharacterController>();
-        playerAnimator = GetComponent<Animator>();
 
         playerInput.CharacterControls.Move.started += context =>
         {
@@ -48,16 +42,15 @@ public class PlayerController : MonoBehaviour
 
     void OnMovementInput(InputAction.CallbackContext context)
     {
-        currentMovementInput = context.ReadValue<Vector2>();
+        CurrentMovementInput = context.ReadValue<Vector2>();
 
-        if(currentMovement != new Vector3(currentMovementInput.x, 0.0f, currentMovementInput.y))
-        {
-            smoothMoveElapsedTime = 0.0f;
-        }
+        //if(CurrentMovement != new Vector3(CurrentMovementInput.x, 0.0f, CurrentMovementInput.y))
+        //{
+        //    smoothMoveElapsedTime = 0.0f;
+        //}
 
-        currentMovement.x = currentMovementInput.x;
-        currentMovement.z = currentMovementInput.y;
-        IsMovementPressed = currentMovementInput.x != 0 || currentMovementInput.y != 0;
+        CurrentMovement = new Vector3(CurrentMovementInput.x, 0.0f, CurrentMovementInput.y);
+        IsMovementPressed = CurrentMovementInput.x != 0 || CurrentMovementInput.y != 0;
     }
 
 
@@ -77,57 +70,58 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        HandleSmoothMove();
-        HandleRotation();
+        //HandleSmoothMove();
+        //HandleRotation();
     }
 
     private void OnDestroy()
     {
     }
 
-    void HandleRotation()
-    {
-        Vector3 positionToLookAt;
+    //void HandleRotation()
+    //{
+    //    Vector3 positionToLookAt;
 
-        positionToLookAt.x = currentMovement.x;
-        positionToLookAt.y = 0.0f;
-        positionToLookAt.z = currentMovement.z;
+    //    positionToLookAt.x = CurrentMovement.x;
+    //    positionToLookAt.y = 0.0f;
+    //    positionToLookAt.z = CurrentMovement.z;
 
-        Quaternion currentRotation = transform.rotation;
+    //    Quaternion currentRotation = transform.rotation;
 
-        if (IsMovementPressed)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(positionToLookAt);
-            transform.rotation = targetRotation; // Snap
-            //transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, rotationFactorPerFrame * Time.deltaTime); // Smooth
-        }
-    }
+    //    if (IsMovementPressed)
+    //    {
+    //        Quaternion targetRotation = Quaternion.LookRotation(positionToLookAt);
+    //        transform.rotation = targetRotation; // Snap
+    //        //transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, rotationFactorPerFrame * Time.deltaTime); // Smooth
+    //    }
+    //}
 
-    void HandleSmoothMove()
-    {
-        if (smoothMoveElapsedTime < smoothMoveTime)
-        {
-            float ratio = Mathf.Clamp01(smoothMoveElapsedTime / smoothMoveTime);
+    //void HandleSmoothMove()
+    //{
+    //    if (smoothMoveElapsedTime < smoothMoveTime)
+    //    {
+    //        float ratio = Mathf.Clamp01(smoothMoveElapsedTime / smoothMoveTime);
 
-            // Stop slerp if direction changes from positive to negative and vice versa ????
-            //currentMovement = Vector3.Slerp(currentMovement, new Vector3(currentMovementInput.x, 0.0f, currentMovementInput.y), ratio); // Smooth Move cause issue with "U Turn"
+    //        // Stop slerp if direction changes from positive to negative and vice versa ????
+    //        //currentMovement = Vector3.Slerp(currentMovement, new Vector3(currentMovementInput.x, 0.0f, currentMovementInput.y), ratio); // Smooth Move cause issue with "U Turn"
 
-            currentMovementAnimation = Vector3.Slerp(currentMovementAnimation, new Vector3(Mathf.Abs(currentMovementInput.x), 0.0f, Mathf.Abs(currentMovementInput.y)), ratio);
+    //        CurrentMovementAnimation = Vector3.Slerp(CurrentMovementAnimation, new Vector3(Mathf.Abs(CurrentMovementInput.x), 0.0f, Mathf.Abs(CurrentMovementInput.y)), ratio);
 
-            smoothMoveElapsedTime += Time.deltaTime;
-        }
-        else
-        {
-            //currentMovement.x = currentMovementInput.x; // Issue with "U Turn"
-            //currentMovement.z = currentMovementInput.y;
+    //        smoothMoveElapsedTime += Time.deltaTime;
+    //    }
+    //    else
+    //    {
+    //        //currentMovement.x = currentMovementInput.x; // Issue with "U Turn"
+    //        //currentMovement.z = currentMovementInput.y;
 
-            currentMovementAnimation.x = Mathf.Abs(currentMovementInput.x);
-            currentMovementAnimation.z = Mathf.Abs(currentMovementInput.y);
-        }
+    //        CurrentMovementAnimation = new Vector3(Mathf.Abs(CurrentMovementInput.x), 0.0f, Mathf.Abs(CurrentMovementInput.y));
+    //        //currentMovementAnimation.x = Mathf.Abs(CurrentMovementInput.x);
+    //        //currentMovementAnimation.z = Mathf.Abs(CurrentMovementInput.y);
+    //    }
 
-        playerAnimator.SetFloat("VelocityX", Mathf.Abs(currentMovementAnimation.x));
-        playerAnimator.SetFloat("VelocityY", Mathf.Abs(currentMovementAnimation.z));
+    //    playerAnimator.SetFloat("VelocityX", Mathf.Abs(CurrentMovementAnimation.x));
+    //    playerAnimator.SetFloat("VelocityY", Mathf.Abs(CurrentMovementAnimation.z));
 
-        characterController.Move(currentMovement * playerSpeed * Time.deltaTime);
-    }
+    //    characterController.Move(CurrentMovement * playerSpeed * Time.deltaTime);
+    //}
 }

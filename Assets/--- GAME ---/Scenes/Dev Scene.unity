@@ -1034,7 +1034,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerSpeed: 5
-  smoothMoveTime: 0.5
+  smoothMoveTime: 10
 --- !u!143 &999552743877660358
 CharacterController:
   m_ObjectHideFlags: 0

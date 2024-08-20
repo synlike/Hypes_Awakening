@@ -6,7 +6,7 @@ public class PlayerState : BaseState<PlayerStateMachine.EPlayerState>
 {
     public PlayerStateMachine Context { get; private set; }
 
-    protected PlayerStateMachine.EPlayerState NextState;
+    protected static PlayerStateMachine.EPlayerState NextState;
 
     public PlayerState(PlayerStateMachine context, PlayerStateMachine.EPlayerState key) : base(key)
     {
