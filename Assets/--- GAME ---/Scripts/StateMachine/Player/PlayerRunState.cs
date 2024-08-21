@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using DG.Tweening;
 
 public class PlayerRunState : PlayerMoveState
 {
@@ -11,10 +12,16 @@ public class PlayerRunState : PlayerMoveState
     private Vector3 currentMovementAnimation;
     private float rotationFactorPerFrame = 10.0f;
     private float smoothMoveElapsedTime = 0.0f;
+    private float smoothAnimationElapsedTime = 0.0f;
 
     // Move Elsewhere (SO on player state machine with all infos ???)
-    private float playerSpeed = 5.0f;
-    private float smoothMoveTime = 0.5f;
+    private float playerSpeed = 0.0f;
+    private float playerWalkSpeed = 3.0f;
+    private float playerRunSpeed = 6.0f;
+    private float playerAnimationVelocity = 0.0f;
+
+    private float smoothAnimationTime = 0.2f;
+    private float runAnimationTreshold = 0.5f;
 
     public PlayerRunState(PlayerStateMachine context, PlayerStateMachine.EPlayerState key) : base(context, key)
     {
@@ -24,6 +31,7 @@ public class PlayerRunState : PlayerMoveState
     {
         Debug.Log("Player entered Run State");
         NextState = PlayerStateMachine.EPlayerState.RUN;
+        playerSpeed = playerWalkSpeed;
     }
 
     public override void ExitState()
@@ -36,23 +44,18 @@ public class PlayerRunState : PlayerMoveState
         Debug.Log("Player is in Run State");
 
 
-        if (!Context.PlayerController.IsMovementPressed && currentMovementAnimation.x == 0f && currentMovementAnimation.z == 0f)
+        if (!Context.PlayerController.IsMovementPressed)
         {
-            // Go To Idle State
-            Debug.LogWarning("QUITTING RUN");
-            NextState = PlayerStateMachine.EPlayerState.IDLE;
-        }
-        else
-        {
-            if (oldMovement != Context.PlayerController.CurrentMovement)
+            if(playerAnimationVelocity < 0.05f)
             {
-                smoothMoveElapsedTime = 0.0f;
-                oldMovement = Context.PlayerController.CurrentMovement;
+                playerAnimationVelocity = 0.0f;
+                Context.PlayerAnimator.SetFloat("Velocity", 0.0f);
+                NextState = PlayerStateMachine.EPlayerState.IDLE;
             }
-
-            HandleSmoothMove();
-            HandleRotation();
         }
+
+        HandleSmoothMove();
+        HandleRotation();
     }
 
     void HandleRotation()
@@ -75,30 +78,28 @@ public class PlayerRunState : PlayerMoveState
 
     void HandleSmoothMove()
     {
-        if (smoothMoveElapsedTime < smoothMoveTime)
+        Vector3 movement = Context.PlayerController.CurrentMovement;
+
+        if(!Context.PlayerController.IsMovementPressed)
         {
-            float ratio = Mathf.Clamp01(smoothMoveElapsedTime / smoothMoveTime);
-
-            // Stop slerp if direction changes from positive to negative and vice versa ????
-            //currentMovement = Vector3.Slerp(currentMovement, new Vector3(currentMovementInput.x, 0.0f, currentMovementInput.y), ratio); // Smooth Move cause issue with "U Turn"
-
-            currentMovementAnimation = Vector3.Slerp(currentMovementAnimation, new Vector3(Mathf.Abs(Context.PlayerController.CurrentMovementInput.x), 0.0f, Mathf.Abs(Context.PlayerController.CurrentMovementInput.y)), ratio);
-
-            smoothMoveElapsedTime += Time.deltaTime;
+            playerSpeed = 0f;
+            DOTween.To(() => playerAnimationVelocity, x => playerAnimationVelocity = x, 0f, smoothAnimationTime);
+        }
+        else if(Mathf.Abs(movement.x) < runAnimationTreshold && Mathf.Abs(movement.z) < runAnimationTreshold)
+        {
+            playerSpeed = playerWalkSpeed;
+            DOTween.To(() => playerAnimationVelocity, x => playerAnimationVelocity = x, 0.5f, smoothAnimationTime);
         }
         else
         {
-            //currentMovement.x = currentMovementInput.x; // Issue with "U Turn"
-            //currentMovement.z = currentMovementInput.y;
-
-            currentMovementAnimation.x = Mathf.Abs(Context.PlayerController.CurrentMovementInput.x);
-            currentMovementAnimation.z = Mathf.Abs(Context.PlayerController.CurrentMovementInput.y);
+            playerSpeed = playerRunSpeed;
+            DOTween.To(() => playerAnimationVelocity, x => playerAnimationVelocity = x, 1.0f, smoothAnimationTime);
         }
+        Debug.LogWarning(playerAnimationVelocity);
 
-        Context.PlayerAnimator.SetFloat("VelocityX", Mathf.Abs(currentMovementAnimation.x));
-        Context.PlayerAnimator.SetFloat("VelocityY", Mathf.Abs(currentMovementAnimation.z));
+        Context.PlayerAnimator.SetFloat("Velocity", playerAnimationVelocity);
 
-        Context.CharacterController.Move(Context.PlayerController.CurrentMovement * playerSpeed * Time.deltaTime);
+        Context.CharacterController.Move(movement.normalized * playerSpeed * Time.deltaTime);
     }
 
     public override PlayerStateMachine.EPlayerState GetNextState()

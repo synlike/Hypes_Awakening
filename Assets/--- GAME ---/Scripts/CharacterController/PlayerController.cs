@@ -7,6 +7,9 @@ using UnityEngine.Rendering;
 
 public class PlayerController : MonoBehaviour
 {
+    // Debug
+    public float currentPlayerSpeed;
+
     private PlayerInput playerInput;
     private float rotationFactorPerFrame = 10.0f;
     private float smoothMoveElapsedTime = 0.0f;
@@ -49,7 +52,7 @@ public class PlayerController : MonoBehaviour
         //    smoothMoveElapsedTime = 0.0f;
         //}
 
-        CurrentMovement = new Vector3(CurrentMovementInput.x, 0.0f, CurrentMovementInput.y);
+        CurrentMovement = new Vector3(CurrentMovementInput.x, 0.0f, CurrentMovementInput.y); // can be moved to PlayerRunState
         IsMovementPressed = CurrentMovementInput.x != 0 || CurrentMovementInput.y != 0;
     }
 

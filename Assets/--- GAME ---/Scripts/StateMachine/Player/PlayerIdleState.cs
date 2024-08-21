@@ -26,7 +26,6 @@ public class PlayerIdleState : PlayerMoveState
 
         if(Context.PlayerController.IsMovementPressed)
         {
-            Debug.LogWarning("QUITTING IDLE");
             NextState = PlayerStateMachine.EPlayerState.RUN;
         }
     }
