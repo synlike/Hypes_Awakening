@@ -31,7 +31,6 @@ public class PlayerRunState : PlayerMoveState
     {
         Debug.Log("Player entered Run State");
         NextState = PlayerStateMachine.EPlayerState.RUN;
-        playerSpeed = playerWalkSpeed;
     }
 
     public override void ExitState()
@@ -49,7 +48,7 @@ public class PlayerRunState : PlayerMoveState
             if(playerAnimationVelocity < 0.05f)
             {
                 playerAnimationVelocity = 0.0f;
-                Context.PlayerAnimator.SetFloat("Velocity", 0.0f);
+                Context.PlayerAnimator.SetFloat(AnimatorStateHashes.Velocity, 0.0f);
                 NextState = PlayerStateMachine.EPlayerState.IDLE;
             }
         }
@@ -95,9 +94,8 @@ public class PlayerRunState : PlayerMoveState
             playerSpeed = playerRunSpeed;
             DOTween.To(() => playerAnimationVelocity, x => playerAnimationVelocity = x, 1.0f, smoothAnimationTime);
         }
-        Debug.LogWarning(playerAnimationVelocity);
 
-        Context.PlayerAnimator.SetFloat("Velocity", playerAnimationVelocity);
+        Context.PlayerAnimator.SetFloat(AnimatorStateHashes.Velocity, playerAnimationVelocity);
 
         Context.CharacterController.Move(movement.normalized * playerSpeed * Time.deltaTime);
     }
