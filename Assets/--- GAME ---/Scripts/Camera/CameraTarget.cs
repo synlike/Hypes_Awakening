@@ -12,9 +12,8 @@ public class CameraTarget : MonoBehaviour
     private const int HIGH_PRIORITY = 20;
 
     private List<CinemachineVirtualCamera> cameras = new List<CinemachineVirtualCamera>();
-    private CinemachineVirtualCamera currentCamera;
 
-    private Quaternion originalRotation;
+    private CinemachineVirtualCamera currentCamera;
 
     [SerializeField]
     private CinemachineVirtualCamera playerCamera;
@@ -35,8 +34,7 @@ public class CameraTarget : MonoBehaviour
 
     private void Awake()
     {
-        PlayerEvents.PlayerLookDirectionChanged.Add(OnPlayerLookDirectionChanged);
-        originalRotation = transform.rotation;
+        PlayerEvents.LookDirectionChanged.Add(OnPlayerLookDirectionChanged);
     }
 
     private void Start()
@@ -67,7 +65,7 @@ public class CameraTarget : MonoBehaviour
 
     private void OnDestroy()
     {
-        PlayerEvents.PlayerLookDirectionChanged.Remove(OnPlayerLookDirectionChanged);
+        PlayerEvents.LookDirectionChanged.Remove(OnPlayerLookDirectionChanged);
     }
 
     private void OnPlayerLookDirectionChanged(ECameraTargetPosition position)

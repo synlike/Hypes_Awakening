@@ -11,28 +11,27 @@ public class PlayerIdleState : PlayerState
 
     public override void EnterState()
     {
+        base.EnterState();
+
         Debug.Log("Player entered Idle State");
         NextState = PlayerStateMachine.EPlayerState.IDLE;
     }
 
     public override void ExitState()
     {
+        base.ExitState();
+
         Debug.Log("Player exited Idle State");
     }
 
     public override void UpdateState()
     {
-        Debug.Log("Player is in Idle State");
+        base.UpdateState();
 
         if(Context.PlayerController.IsMovementPressed)
         {
             NextState = PlayerStateMachine.EPlayerState.RUN;
         }
-    }
-
-    public override PlayerStateMachine.EPlayerState GetNextState()
-    {
-        return base.GetNextState();
     }
 
     public override void OnTriggerEnter(Collider other)

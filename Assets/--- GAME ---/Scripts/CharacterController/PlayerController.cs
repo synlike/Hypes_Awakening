@@ -34,15 +34,44 @@ public class PlayerController : MonoBehaviour
         {
             OnMovementInput(context);
         };
+
+        playerInput.CharacterControls.Melee.started += context =>
+        {
+            OnMeleePressed(context);
+        };
+
+        playerInput.CharacterControls.Block.started += context =>
+        {
+            OnBlockPressed(context);
+        };
+
+        playerInput.CharacterControls.Block.canceled += context =>
+        {
+            OnBlockReleased(context);
+        };
     }
 
-    void OnMovementInput(InputAction.CallbackContext context)
+    private void OnMovementInput(InputAction.CallbackContext context)
     {
         CurrentMovementInput = context.ReadValue<Vector2>();
 
         IsMovementPressed = CurrentMovementInput.x != 0 || CurrentMovementInput.y != 0;
     }
 
+    private void OnMeleePressed(InputAction.CallbackContext context)
+    {
+        PlayerEvents.MeleePressed.Invoke();
+    }
+
+    private void OnBlockPressed(InputAction.CallbackContext context)
+    {
+        PlayerEvents.BlockPressed.Invoke();
+    }
+
+    private void OnBlockReleased(InputAction.CallbackContext context)
+    {
+        PlayerEvents.BlockReleased.Invoke();
+    }
 
     void Start()
     {

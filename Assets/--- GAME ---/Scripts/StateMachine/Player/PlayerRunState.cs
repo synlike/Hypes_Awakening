@@ -8,6 +8,7 @@ using DG.Tweening;
 public class PlayerRunState : PlayerState
 {
     private Vector3 currentMovement;
+    private Vector3 previousMovement;
     private float playerSpeed = 0.0f;
     private float playerAnimationVelocity = 0.0f;
     private bool isLookingLeft;
@@ -20,19 +21,28 @@ public class PlayerRunState : PlayerState
 
     public override void EnterState()
     {
+        base.EnterState();
+
         Debug.Log("Player entered Run State");
         NextState = PlayerStateMachine.EPlayerState.RUN;
     }
 
     public override void ExitState()
     {
+        base.ExitState();
+
         Debug.Log("Player exited Run State");
+
+        playerSpeed = 0.0f;
+        playerAnimationVelocity = 0.0f;
+        currentMovement = Vector3.zero;
+        previousMovement = Vector3.zero;
+        Context.PlayerAnimator.SetFloat(AnimatorStateHashes.Velocity, playerAnimationVelocity);
     }
 
     public override void UpdateState()
     {
-        Debug.Log("Player is in Run State");
-
+        base.UpdateState();
 
         if (!Context.PlayerController.IsMovementPressed)
         {
@@ -69,47 +79,47 @@ public class PlayerRunState : PlayerState
     {
         Vector3 movement = currentMovement;
 
-        if(!Context.PlayerController.IsMovementPressed)
+        if(previousMovement != currentMovement)
         {
-            playerSpeed = 0f;
-            DOTween.To(() => playerAnimationVelocity, x => playerAnimationVelocity = x, 0f, Context.PlayerController.PlayerData.SmoothAnimationTime);
-        }
-        else if(Mathf.Abs(movement.x) < Context.PlayerController.PlayerData.RunAnimationTreshold && Mathf.Abs(movement.z) < Context.PlayerController.PlayerData.RunAnimationTreshold)
-        {
-            playerSpeed = Context.PlayerController.PlayerData.WalkSpeed;
-            DOTween.To(() => playerAnimationVelocity, x => playerAnimationVelocity = x, 0.5f, Context.PlayerController.PlayerData.SmoothAnimationTime);
-        }
-        else
-        {
-            playerSpeed = Context.PlayerController.PlayerData.RunSpeed;
-            DOTween.To(() => playerAnimationVelocity, x => playerAnimationVelocity = x, 1.0f, Context.PlayerController.PlayerData.SmoothAnimationTime);
-        }
-
-        if (currentMovement.x > 0)
-        {
-            if(cameraTargetPosition != ECameraTargetPosition.LEFT)
+            if (!Context.PlayerController.IsMovementPressed)
             {
-                cameraTargetPosition = ECameraTargetPosition.LEFT;
-                PlayerEvents.PlayerLookDirectionChanged.Invoke(cameraTargetPosition);
+                playerSpeed = 0f;
+                DOTween.To(() => playerAnimationVelocity, x => playerAnimationVelocity = x, 0f, Context.PlayerController.PlayerData.SmoothAnimationTime);
             }
-        }
-        else if (currentMovement.x < 0)
-        {
-            if (cameraTargetPosition != ECameraTargetPosition.RIGHT)
+            else if (Mathf.Abs(movement.x) < Context.PlayerController.PlayerData.RunAnimationTreshold && Mathf.Abs(movement.z) < Context.PlayerController.PlayerData.RunAnimationTreshold)
             {
-                cameraTargetPosition = ECameraTargetPosition.RIGHT;
-                PlayerEvents.PlayerLookDirectionChanged.Invoke(cameraTargetPosition);
+                playerSpeed = Context.PlayerController.PlayerData.WalkSpeed;
+                DOTween.To(() => playerAnimationVelocity, x => playerAnimationVelocity = x, 0.5f, Context.PlayerController.PlayerData.SmoothAnimationTime);
+            }
+            else
+            {
+                playerSpeed = Context.PlayerController.PlayerData.RunSpeed;
+                DOTween.To(() => playerAnimationVelocity, x => playerAnimationVelocity = x, 1.0f, Context.PlayerController.PlayerData.SmoothAnimationTime);
+            }
+
+            previousMovement = currentMovement;
+
+            if (currentMovement.x > 0)
+            {
+                if(cameraTargetPosition != ECameraTargetPosition.LEFT)
+                {
+                    cameraTargetPosition = ECameraTargetPosition.LEFT;
+                    PlayerEvents.LookDirectionChanged.Invoke(cameraTargetPosition);
+                }
+            }
+            else if (currentMovement.x < 0)
+            {
+                if (cameraTargetPosition != ECameraTargetPosition.RIGHT)
+                {
+                    cameraTargetPosition = ECameraTargetPosition.RIGHT;
+                    PlayerEvents.LookDirectionChanged.Invoke(cameraTargetPosition);
+                }
             }
         }
 
         Context.PlayerAnimator.SetFloat(AnimatorStateHashes.Velocity, playerAnimationVelocity);
 
         Context.CharacterController.Move(movement.normalized * playerSpeed * Time.deltaTime);
-    }
-
-    public override PlayerStateMachine.EPlayerState GetNextState()
-    {
-        return base.GetNextState();
     }
 
     public override void OnTriggerEnter(Collider other)
