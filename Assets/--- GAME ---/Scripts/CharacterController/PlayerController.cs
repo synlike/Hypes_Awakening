@@ -7,25 +7,18 @@ using UnityEngine.Rendering;
 
 public class PlayerController : MonoBehaviour
 {
-    // Debug
-    public float currentPlayerSpeed;
-
     private PlayerInput playerInput;
-    private float rotationFactorPerFrame = 10.0f;
-    private float smoothMoveElapsedTime = 0.0f;
 
-    [SerializeField] private float playerSpeed = 5.0f;
-    [SerializeField] private float smoothMoveTime = 0.5f;
-
+    [field: SerializeField] public PlayerData PlayerData { get; private set; }
+    public CameraTarget CameraTarget { get; private set; }
     public bool IsMovementPressed { get; private set; }
     public Vector2 CurrentMovementInput { get; private set; }
-    public Vector3 CurrentMovement { get; private set; }
-    //public Vector3 CurrentMovementAnimation { get; private set; }
 
 
     private void Awake()
     {
         playerInput = new PlayerInput();
+        CameraTarget = GetComponent<CameraTarget>();
 
         playerInput.CharacterControls.Move.started += context =>
         {
@@ -47,12 +40,6 @@ public class PlayerController : MonoBehaviour
     {
         CurrentMovementInput = context.ReadValue<Vector2>();
 
-        //if(CurrentMovement != new Vector3(CurrentMovementInput.x, 0.0f, CurrentMovementInput.y))
-        //{
-        //    smoothMoveElapsedTime = 0.0f;
-        //}
-
-        CurrentMovement = new Vector3(CurrentMovementInput.x, 0.0f, CurrentMovementInput.y); // can be moved to PlayerRunState
         IsMovementPressed = CurrentMovementInput.x != 0 || CurrentMovementInput.y != 0;
     }
 

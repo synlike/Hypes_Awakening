@@ -6,11 +6,11 @@ using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class PlayerStateMachine : StateManager<PlayerStateMachine.EPlayerState>
 { 
-    // Replace with SO ????
     public CharacterController CharacterController {  get; private set; }
     public PlayerController PlayerController { get; private set; }
     public Animator PlayerAnimator { get; private set; }
     public PlayerInput PlayerInput { get; private set; }
+
 
     public enum EPlayerState
     {

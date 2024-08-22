@@ -5,23 +5,14 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using DG.Tweening;
 
-public class PlayerRunState : PlayerMoveState
+public class PlayerRunState : PlayerState
 {
-    //private Vector2 currentMovementInput;
-    private Vector3 oldMovement;
-    private Vector3 currentMovementAnimation;
-    private float rotationFactorPerFrame = 10.0f;
-    private float smoothMoveElapsedTime = 0.0f;
-    private float smoothAnimationElapsedTime = 0.0f;
-
-    // Move Elsewhere (SO on player state machine with all infos ???)
+    private Vector3 currentMovement;
     private float playerSpeed = 0.0f;
-    private float playerWalkSpeed = 3.0f;
-    private float playerRunSpeed = 6.0f;
     private float playerAnimationVelocity = 0.0f;
+    private bool isLookingLeft;
 
-    private float smoothAnimationTime = 0.2f;
-    private float runAnimationTreshold = 0.5f;
+    private ECameraTargetPosition cameraTargetPosition = ECameraTargetPosition.UNSET;
 
     public PlayerRunState(PlayerStateMachine context, PlayerStateMachine.EPlayerState key) : base(context, key)
     {
@@ -45,7 +36,7 @@ public class PlayerRunState : PlayerMoveState
 
         if (!Context.PlayerController.IsMovementPressed)
         {
-            if(playerAnimationVelocity < 0.05f)
+            if (playerAnimationVelocity < 0.05f)
             {
                 playerAnimationVelocity = 0.0f;
                 Context.PlayerAnimator.SetFloat(AnimatorStateHashes.Velocity, 0.0f);
@@ -53,7 +44,9 @@ public class PlayerRunState : PlayerMoveState
             }
         }
 
-        HandleSmoothMove();
+        currentMovement = new Vector3(Context.PlayerController.CurrentMovementInput.x, 0.0f, Context.PlayerController.CurrentMovementInput.y);
+
+        HandleMovement();
         HandleRotation();
     }
 
@@ -61,38 +54,52 @@ public class PlayerRunState : PlayerMoveState
     {
         Vector3 positionToLookAt;
 
-        positionToLookAt.x = Context.PlayerController.CurrentMovement.x;
+        positionToLookAt.x = currentMovement.x;
         positionToLookAt.y = 0.0f;
-        positionToLookAt.z = Context.PlayerController.CurrentMovement.z;
-
-        Quaternion currentRotation = Context.transform.rotation; // get from elsewhere (playerManager or else)
+        positionToLookAt.z = currentMovement.z;
 
         if (Context.PlayerController.IsMovementPressed)
         {
             Quaternion targetRotation = Quaternion.LookRotation(positionToLookAt);
             Context.transform.rotation = targetRotation; // Snap
-            //transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, rotationFactorPerFrame * Time.deltaTime); // Smooth
         }
     }
 
-    void HandleSmoothMove()
+    void HandleMovement()
     {
-        Vector3 movement = Context.PlayerController.CurrentMovement;
+        Vector3 movement = currentMovement;
 
         if(!Context.PlayerController.IsMovementPressed)
         {
             playerSpeed = 0f;
-            DOTween.To(() => playerAnimationVelocity, x => playerAnimationVelocity = x, 0f, smoothAnimationTime);
+            DOTween.To(() => playerAnimationVelocity, x => playerAnimationVelocity = x, 0f, Context.PlayerController.PlayerData.SmoothAnimationTime);
         }
-        else if(Mathf.Abs(movement.x) < runAnimationTreshold && Mathf.Abs(movement.z) < runAnimationTreshold)
+        else if(Mathf.Abs(movement.x) < Context.PlayerController.PlayerData.RunAnimationTreshold && Mathf.Abs(movement.z) < Context.PlayerController.PlayerData.RunAnimationTreshold)
         {
-            playerSpeed = playerWalkSpeed;
-            DOTween.To(() => playerAnimationVelocity, x => playerAnimationVelocity = x, 0.5f, smoothAnimationTime);
+            playerSpeed = Context.PlayerController.PlayerData.WalkSpeed;
+            DOTween.To(() => playerAnimationVelocity, x => playerAnimationVelocity = x, 0.5f, Context.PlayerController.PlayerData.SmoothAnimationTime);
         }
         else
         {
-            playerSpeed = playerRunSpeed;
-            DOTween.To(() => playerAnimationVelocity, x => playerAnimationVelocity = x, 1.0f, smoothAnimationTime);
+            playerSpeed = Context.PlayerController.PlayerData.RunSpeed;
+            DOTween.To(() => playerAnimationVelocity, x => playerAnimationVelocity = x, 1.0f, Context.PlayerController.PlayerData.SmoothAnimationTime);
+        }
+
+        if (currentMovement.x > 0)
+        {
+            if(cameraTargetPosition != ECameraTargetPosition.LEFT)
+            {
+                cameraTargetPosition = ECameraTargetPosition.LEFT;
+                PlayerEvents.PlayerLookDirectionChanged.Invoke(cameraTargetPosition);
+            }
+        }
+        else if (currentMovement.x < 0)
+        {
+            if (cameraTargetPosition != ECameraTargetPosition.RIGHT)
+            {
+                cameraTargetPosition = ECameraTargetPosition.RIGHT;
+                PlayerEvents.PlayerLookDirectionChanged.Invoke(cameraTargetPosition);
+            }
         }
 
         Context.PlayerAnimator.SetFloat(AnimatorStateHashes.Velocity, playerAnimationVelocity);
