@@ -15,6 +15,8 @@ public class PlayerIdleState : PlayerState
 
         Debug.Log("Player entered Idle State");
         NextState = PlayerStateMachine.EPlayerState.IDLE;
+
+        Context.PlayerAnimator.SetBool("Block", true);
     }
 
     public override void ExitState()
