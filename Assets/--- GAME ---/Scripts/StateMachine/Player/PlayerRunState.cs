@@ -16,12 +16,13 @@ public class PlayerRunState : PlayerState
     private bool previousIsBlocking;
     private bool previousIsMeleePressed;
     private bool previousCanRun;
-    //private bool isMeleePressed;
 
     // Idle Walk Run lerp
     private float startBlendValue = 0.0f;
     private float goalBlendValue = 0.0f;
     private float blendTimer = 0.0f;
+
+    private ECameraTargetPosition cameraTargetPosition = ECameraTargetPosition.UNSET;
 
     public PlayerRunState(PlayerStateMachine context, PlayerStateMachine.EPlayerState key) : base(context, key)
     {
@@ -31,7 +32,7 @@ public class PlayerRunState : PlayerState
     {
         base.EnterState();
 
-        Debug.Log("Player entered Run State");
+        //Debug.Log("Player entered Run State");
         PlayerEvents.BlockPressed.Add(OnBlockPressed);
         PlayerEvents.BlockReleased.Add(OnBlockReleased);
         PlayerEvents.MeleePressed.Add(OnPlayerMeleePressed);
@@ -102,6 +103,10 @@ public class PlayerRunState : PlayerState
         if (previousMovement != currentMovement || previousIsMeleePressed != IsMelee || previousIsBlocking != IsBlocking || previousCanRun != canRun)
         {
             smoothAnimationTransitionDuration = Context.PlayerController.PlayerData.SmoothAnimationTime;
+            previousMovement = currentMovement;
+            previousIsMeleePressed = IsMelee;
+            previousIsBlocking = IsBlocking;
+            previousCanRun = canRun;
 
             if (IsMelee)
             {
@@ -134,10 +139,6 @@ public class PlayerRunState : PlayerState
             }
 
             blendTimer = 0.0f;
-            previousMovement = currentMovement;
-            previousIsMeleePressed = IsMelee;
-            previousIsBlocking = IsBlocking;
-            previousCanRun = canRun;
         }
 
         if (playerAnimationVelocity != goalBlendValue)
@@ -152,6 +153,23 @@ public class PlayerRunState : PlayerState
             }
 
             Context.PlayerAnimator.SetFloat(AnimatorStateHashes.Velocity, playerAnimationVelocity);
+        }
+
+        if (currentMovement.x > 0)
+        {
+            if (cameraTargetPosition != ECameraTargetPosition.LEFT)
+            {
+                cameraTargetPosition = ECameraTargetPosition.LEFT;
+                PlayerEvents.LookDirectionChanged.Invoke(cameraTargetPosition);
+            }
+        }
+        else if (currentMovement.x < 0)
+        {
+            if (cameraTargetPosition != ECameraTargetPosition.RIGHT)
+            {
+                cameraTargetPosition = ECameraTargetPosition.RIGHT;
+                PlayerEvents.LookDirectionChanged.Invoke(cameraTargetPosition);
+            }
         }
 
         Context.CharacterController.Move(movement.normalized * playerSpeed * Time.deltaTime);
