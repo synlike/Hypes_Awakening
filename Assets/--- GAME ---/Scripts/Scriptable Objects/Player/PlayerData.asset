@@ -12,3 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdeb98459b168154d9fd0152804afd7c, type: 3}
   m_Name: PlayerData
   m_EditorClassIdentifier: 
+  <WalkSpeed>k__BackingField: 3
+  <BlockSpeed>k__BackingField: 4
+  <RunSpeed>k__BackingField: 6
+  <SmoothAnimationTime>k__BackingField: 0.2
+  <RunAnimationTreshold>k__BackingField: 0.5
+  <TimeToBlockWeightLerp>k__BackingField: 0.2

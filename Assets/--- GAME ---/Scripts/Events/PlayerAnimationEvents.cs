@@ -7,6 +7,8 @@ public class PlayerAnimationEvents : MonoBehaviour
     public static readonly GameEvent MeleeDone = new();
     public static readonly GameEvent MeleeCancellable = new();
 
+    public static readonly GameEvent BlockDone = new();
+
     public void MeleeDoneEvent()
     {
         MeleeDone.Invoke();
@@ -14,5 +16,9 @@ public class PlayerAnimationEvents : MonoBehaviour
     public void MeleeCancellableEvent()
     {
         MeleeCancellable.Invoke();
+    }
+    public void BlockDoneEvent()
+    {
+        BlockDone.Invoke();
     }
 }

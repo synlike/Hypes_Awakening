@@ -42577,7 +42577,7 @@ AnimationClip:
   - time: 0.28333333
     functionName: MeleeCancellableEvent
     data: 
-    objectReferenceParameter: {fileID: 0}
+    objectReferenceParameter: {fileID: 11500000, guid: 82ba5010a46dc394d9c15c436f3a7c68, type: 3}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0

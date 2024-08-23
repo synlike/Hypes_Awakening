@@ -60,9 +60,9 @@ AvatarMask:
   - m_Path: Rig/root/handIK.r
     m_Weight: 0
   - m_Path: Rig/root/hips
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: Rig/root/hips/spine
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: Rig/root/hips/spine/chest
     m_Weight: 0
   - m_Path: Rig/root/hips/spine/chest/head
