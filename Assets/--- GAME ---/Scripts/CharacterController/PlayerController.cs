@@ -4,15 +4,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
+using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class PlayerController : MonoBehaviour
 {
     private PlayerInput playerInput;
 
     [field: SerializeField] public PlayerData PlayerData { get; private set; }
+
+    [SerializeField] private bool enable8DirectionalInputs = true;
     public CameraTarget CameraTarget { get; private set; }
     public bool IsMovementPressed { get; private set; }
+    public bool CanRun { get; private set; }
     public Vector2 CurrentMovementInput { get; private set; }
+    public Vector2 CurrentRunInput { get; private set; }
 
 
     private void Awake()
@@ -53,9 +58,39 @@ public class PlayerController : MonoBehaviour
 
     private void OnMovementInput(InputAction.CallbackContext context)
     {
-        CurrentMovementInput = context.ReadValue<Vector2>();
+        Vector2 movementInput = context.ReadValue<Vector2>();
 
-        IsMovementPressed = CurrentMovementInput.x != 0 || CurrentMovementInput.y != 0;
+        IsMovementPressed = movementInput.x != 0 || movementInput.y != 0;
+        CanRun = Mathf.Abs(movementInput.x) >= PlayerData.WalkAnimationTreshold || Mathf.Abs(movementInput.y) >= PlayerData.WalkAnimationTreshold;
+
+        if(enable8DirectionalInputs)
+        {
+            Calculate8DirMovement(movementInput);
+        }
+        else
+        {
+            CurrentMovementInput = movementInput;
+        }
+    }
+
+    private void Calculate8DirMovement(Vector2 movementInput)
+    {
+        if(IsMovementPressed)
+        {
+            float angle = Mathf.Atan2(movementInput.y, movementInput.x) * Mathf.Rad2Deg;
+            angle = Mathf.Round(angle / 45.0f) * 45.0f;
+
+            float horizontalOut = Mathf.Round(Mathf.Cos(angle * Mathf.Deg2Rad));
+            float verticalOut = Mathf.Round(Mathf.Sin(angle * Mathf.Deg2Rad));
+
+            CurrentMovementInput = new Vector2(horizontalOut, verticalOut);
+
+            CurrentMovementInput.Normalize();
+        }
+        else
+        {
+            CurrentMovementInput = Vector2.zero;
+        }
     }
 
     private void OnMeleePressed(InputAction.CallbackContext context)
@@ -89,58 +124,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        //HandleSmoothMove();
-        //HandleRotation();
     }
 
     private void OnDestroy()
     {
     }
-
-    //void HandleRotation()
-    //{
-    //    Vector3 positionToLookAt;
-
-    //    positionToLookAt.x = CurrentMovement.x;
-    //    positionToLookAt.y = 0.0f;
-    //    positionToLookAt.z = CurrentMovement.z;
-
-    //    Quaternion currentRotation = transform.rotation;
-
-    //    if (IsMovementPressed)
-    //    {
-    //        Quaternion targetRotation = Quaternion.LookRotation(positionToLookAt);
-    //        transform.rotation = targetRotation; // Snap
-    //        //transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, rotationFactorPerFrame * Time.deltaTime); // Smooth
-    //    }
-    //}
-
-    //void HandleSmoothMove()
-    //{
-    //    if (smoothMoveElapsedTime < smoothMoveTime)
-    //    {
-    //        float ratio = Mathf.Clamp01(smoothMoveElapsedTime / smoothMoveTime);
-
-    //        // Stop slerp if direction changes from positive to negative and vice versa ????
-    //        //currentMovement = Vector3.Slerp(currentMovement, new Vector3(currentMovementInput.x, 0.0f, currentMovementInput.y), ratio); // Smooth Move cause issue with "U Turn"
-
-    //        CurrentMovementAnimation = Vector3.Slerp(CurrentMovementAnimation, new Vector3(Mathf.Abs(CurrentMovementInput.x), 0.0f, Mathf.Abs(CurrentMovementInput.y)), ratio);
-
-    //        smoothMoveElapsedTime += Time.deltaTime;
-    //    }
-    //    else
-    //    {
-    //        //currentMovement.x = currentMovementInput.x; // Issue with "U Turn"
-    //        //currentMovement.z = currentMovementInput.y;
-
-    //        CurrentMovementAnimation = new Vector3(Mathf.Abs(CurrentMovementInput.x), 0.0f, Mathf.Abs(CurrentMovementInput.y));
-    //        //currentMovementAnimation.x = Mathf.Abs(CurrentMovementInput.x);
-    //        //currentMovementAnimation.z = Mathf.Abs(CurrentMovementInput.y);
-    //    }
-
-    //    playerAnimator.SetFloat("VelocityX", Mathf.Abs(CurrentMovementAnimation.x));
-    //    playerAnimator.SetFloat("VelocityY", Mathf.Abs(CurrentMovementAnimation.z));
-
-    //    characterController.Move(CurrentMovement * playerSpeed * Time.deltaTime);
-    //}
 }

@@ -1835,6 +1835,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <PlayerData>k__BackingField: {fileID: 11400000, guid: c6a9a2d83e560854eac863ad9e15b661, type: 2}
+  enable8DirectionalInputs: 1
 --- !u!143 &999552743877660358
 CharacterController:
   m_ObjectHideFlags: 0

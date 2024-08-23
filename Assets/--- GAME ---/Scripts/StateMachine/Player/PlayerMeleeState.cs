@@ -6,8 +6,6 @@ using UnityEngine;
 
 public class PlayerMeleeState : PlayerState
 {
-    private float playerSpeed = 0.0f;
-    private Vector3 currentMovement;
     private bool isMeleeCancellable = true;
 
     // CAN TRANSITIONED TO BLOCK STATE AT ANY TIME (NO NEED TO COMBINE ANIMATIONS HERE => BUT BLOCK CAN MELEE COMBINED)

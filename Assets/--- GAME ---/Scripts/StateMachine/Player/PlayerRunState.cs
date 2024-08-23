@@ -11,13 +11,17 @@ public class PlayerRunState : PlayerState
     private Vector3 previousMovement;
     private float playerSpeed = 0.0f;
     private float playerAnimationVelocity = 0.0f;
-    private float smoothAnimationTransitionTime = 0.0f;
+    private float smoothAnimationTransitionDuration = 0.0f;
     private bool isLookingLeft;
     private bool previousIsBlocking;
     private bool previousIsMeleePressed;
+    private bool previousCanRun;
     //private bool isMeleePressed;
 
-    private ECameraTargetPosition cameraTargetPosition = ECameraTargetPosition.UNSET;
+    // Idle Walk Run lerp
+    private float startBlendValue = 0.0f;
+    private float goalBlendValue = 0.0f;
+    private float blendTimer = 0.0f;
 
     public PlayerRunState(PlayerStateMachine context, PlayerStateMachine.EPlayerState key) : base(context, key)
     {
@@ -32,7 +36,7 @@ public class PlayerRunState : PlayerState
         PlayerEvents.BlockReleased.Add(OnBlockReleased);
         PlayerEvents.MeleePressed.Add(OnPlayerMeleePressed);
 
-        smoothAnimationTransitionTime = Context.PlayerController.PlayerData.SmoothAnimationTime;
+        smoothAnimationTransitionDuration = Context.PlayerController.PlayerData.SmoothAnimationTime;
 
         NextState = PlayerStateMachine.EPlayerState.RUN;
     }
@@ -93,69 +97,66 @@ public class PlayerRunState : PlayerState
     {
         Vector3 movement = currentMovement;
 
-        if(previousMovement != currentMovement || previousIsBlocking != IsBlocking || previousIsMeleePressed != IsMelee)
+        bool canRun = Context.PlayerController.CanRun;
+
+        if (previousMovement != currentMovement || previousIsMeleePressed != IsMelee || previousIsBlocking != IsBlocking || previousCanRun != canRun)
         {
-            if(previousIsBlocking != IsBlocking)
-            {
-                previousIsBlocking = IsBlocking;
-            }
+            smoothAnimationTransitionDuration = Context.PlayerController.PlayerData.SmoothAnimationTime;
 
-            if (previousIsMeleePressed != IsMelee)
+            if (IsMelee)
             {
-                if(IsMelee)
-                {
-                    smoothAnimationTransitionTime = Context.PlayerController.PlayerData.SmoothAnimationTimeMelee;
-                }
-                else
-                {
-                    smoothAnimationTransitionTime = Context.PlayerController.PlayerData.SmoothAnimationTime;
-                }
-
-                previousIsMeleePressed = IsMelee;
+                Debug.LogWarning("SETTING STOP MELEE");
+                playerSpeed = Context.PlayerController.PlayerData.IdleSpeed;
+                goalBlendValue = Context.PlayerController.PlayerData.IdleAnimationTreshold;
+                smoothAnimationTransitionDuration = Context.PlayerController.PlayerData.SmoothAnimationTimeMelee;
+                startBlendValue = playerAnimationVelocity;
             }
-
-            if (!Context.PlayerController.IsMovementPressed)
+            else if (!Context.PlayerController.IsMovementPressed)
             {
-                playerSpeed = 0f;
-                DOTween.To(() => playerAnimationVelocity, x => playerAnimationVelocity = x, 0f, smoothAnimationTransitionTime);
+                Debug.LogWarning("SETTING STOP");
+                playerSpeed = Context.PlayerController.PlayerData.IdleSpeed;
+                goalBlendValue = Context.PlayerController.PlayerData.IdleAnimationTreshold;
+                startBlendValue = playerAnimationVelocity;
             }
-            else if (Mathf.Abs(movement.x) < Context.PlayerController.PlayerData.RunAnimationTreshold && Mathf.Abs(movement.z) < Context.PlayerController.PlayerData.RunAnimationTreshold
-                || IsBlocking || IsMelee)
+            else if (!canRun || IsBlocking)
             {
+                Debug.LogWarning("SETTING WALK");
                 playerSpeed = Context.PlayerController.PlayerData.WalkSpeed;
-                DOTween.To(() => playerAnimationVelocity, x => playerAnimationVelocity = x, 0.5f, smoothAnimationTransitionTime);
+                goalBlendValue = Context.PlayerController.PlayerData.WalkAnimationTreshold;
+                startBlendValue = playerAnimationVelocity;
             }
             else
             {
+                Debug.LogWarning("SETTING RUN");
                 playerSpeed = Context.PlayerController.PlayerData.RunSpeed;
-                DOTween.To(() => playerAnimationVelocity, x => playerAnimationVelocity = x, 1.0f, smoothAnimationTransitionTime);
+                goalBlendValue = Context.PlayerController.PlayerData.RunAnimationTreshold;
+                startBlendValue = Mathf.Clamp(playerAnimationVelocity, Context.PlayerController.PlayerData.WalkAnimationTreshold, Context.PlayerController.PlayerData.RunAnimationTreshold);
             }
 
+            blendTimer = 0.0f;
             previousMovement = currentMovement;
-
-            if (currentMovement.x > 0)
-            {
-                if(cameraTargetPosition != ECameraTargetPosition.LEFT)
-                {
-                    cameraTargetPosition = ECameraTargetPosition.LEFT;
-                    PlayerEvents.LookDirectionChanged.Invoke(cameraTargetPosition);
-                }
-            }
-            else if (currentMovement.x < 0)
-            {
-                if (cameraTargetPosition != ECameraTargetPosition.RIGHT)
-                {
-                    cameraTargetPosition = ECameraTargetPosition.RIGHT;
-                    PlayerEvents.LookDirectionChanged.Invoke(cameraTargetPosition);
-                }
-            }
+            previousIsMeleePressed = IsMelee;
+            previousIsBlocking = IsBlocking;
+            previousCanRun = canRun;
         }
 
-        Context.PlayerAnimator.SetFloat(AnimatorStateHashes.Velocity, playerAnimationVelocity);
+        if (playerAnimationVelocity != goalBlendValue)
+        {
+            playerAnimationVelocity = Mathf.Lerp(startBlendValue, goalBlendValue, blendTimer / smoothAnimationTransitionDuration);
+
+            blendTimer += Time.deltaTime;
+
+            if (blendTimer >= smoothAnimationTransitionDuration)
+            {
+                playerAnimationVelocity = goalBlendValue;
+            }
+
+            Context.PlayerAnimator.SetFloat(AnimatorStateHashes.Velocity, playerAnimationVelocity);
+        }
 
         Context.CharacterController.Move(movement.normalized * playerSpeed * Time.deltaTime);
 
-        if (IsMelee && playerAnimationVelocity == 0.5f)
+        if (IsMelee && playerAnimationVelocity == Context.PlayerController.PlayerData.IdleAnimationTreshold)
         {
             NextState = PlayerStateMachine.EPlayerState.MELEE;
         }

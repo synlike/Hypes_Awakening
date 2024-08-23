@@ -42,10 +42,9 @@ public class PlayerState : BaseState<PlayerStateMachine.EPlayerState>
     {
         if (IsBlocking && Context.PlayerAnimator.GetLayerWeight(BLOCK_LAYER_ID) != LAYER_WEIGHT_ON)
         {
-            Debug.LogWarning("LERPING TO 1");
             // lerp layer weight to 1
             Context.PlayerAnimator.SetLayerWeight
-                (BLOCK_LAYER_ID, Mathf.Lerp(StartBlockWeightValue, 1.0f, blockWeightLerpTimer / Context.PlayerController.PlayerData.TimeToBlockWeightLerp));
+                (BLOCK_LAYER_ID, Mathf.Lerp(StartBlockWeightValue, LAYER_WEIGHT_ON, blockWeightLerpTimer / Context.PlayerController.PlayerData.TimeToBlockWeightLerp));
 
             blockWeightLerpTimer += Time.deltaTime;
 
@@ -56,10 +55,9 @@ public class PlayerState : BaseState<PlayerStateMachine.EPlayerState>
         }
         else if (!IsBlocking && Context.PlayerAnimator.GetLayerWeight(BLOCK_LAYER_ID) != LAYER_WEIGHT_OFF)
         {
-            Debug.LogWarning("LERPING TO 0");
             // lerp layer weight to 0
             Context.PlayerAnimator.SetLayerWeight
-                (BLOCK_LAYER_ID, Mathf.Lerp(StartBlockWeightValue, 0.0f, blockWeightLerpTimer / Context.PlayerController.PlayerData.TimeToBlockWeightLerp));
+                (BLOCK_LAYER_ID, Mathf.Lerp(StartBlockWeightValue, LAYER_WEIGHT_OFF, blockWeightLerpTimer / Context.PlayerController.PlayerData.TimeToBlockWeightLerp));
 
             blockWeightLerpTimer += Time.deltaTime;
 
