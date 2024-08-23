@@ -18,6 +18,8 @@ public class PlayerState : BaseState<PlayerStateMachine.EPlayerState>
 
     protected static bool IsBlocking = false;
 
+    protected static bool IsMelee = false;
+
 
     // Block layer lerp
     protected static float StartBlockWeightValue = 0.0f;

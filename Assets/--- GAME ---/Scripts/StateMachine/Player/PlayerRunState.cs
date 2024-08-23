@@ -15,7 +15,7 @@ public class PlayerRunState : PlayerState
     private bool isLookingLeft;
     private bool previousIsBlocking;
     private bool previousIsMeleePressed;
-    private bool isMeleePressed;
+    //private bool isMeleePressed;
 
     private ECameraTargetPosition cameraTargetPosition = ECameraTargetPosition.UNSET;
 
@@ -31,7 +31,6 @@ public class PlayerRunState : PlayerState
         PlayerEvents.BlockPressed.Add(OnBlockPressed);
         PlayerEvents.BlockReleased.Add(OnBlockReleased);
         PlayerEvents.MeleePressed.Add(OnPlayerMeleePressed);
-        PlayerAnimationEvents.MeleeDone.Add(OnMeleeDone);
 
         smoothAnimationTransitionTime = Context.PlayerController.PlayerData.SmoothAnimationTime;
 
@@ -53,7 +52,6 @@ public class PlayerRunState : PlayerState
         PlayerEvents.BlockPressed.Remove(OnBlockPressed);
         PlayerEvents.BlockReleased.Remove(OnBlockReleased);
         PlayerEvents.MeleePressed.Remove(OnPlayerMeleePressed);
-        PlayerAnimationEvents.MeleeDone.Remove(OnMeleeDone);
     }
 
     public override void UpdateState()
@@ -95,16 +93,16 @@ public class PlayerRunState : PlayerState
     {
         Vector3 movement = currentMovement;
 
-        if(previousMovement != currentMovement || previousIsBlocking != IsBlocking || previousIsMeleePressed != isMeleePressed)
+        if(previousMovement != currentMovement || previousIsBlocking != IsBlocking || previousIsMeleePressed != IsMelee)
         {
             if(previousIsBlocking != IsBlocking)
             {
                 previousIsBlocking = IsBlocking;
             }
 
-            if (previousIsMeleePressed != isMeleePressed)
+            if (previousIsMeleePressed != IsMelee)
             {
-                if(isMeleePressed)
+                if(IsMelee)
                 {
                     smoothAnimationTransitionTime = Context.PlayerController.PlayerData.SmoothAnimationTimeMelee;
                 }
@@ -113,7 +111,7 @@ public class PlayerRunState : PlayerState
                     smoothAnimationTransitionTime = Context.PlayerController.PlayerData.SmoothAnimationTime;
                 }
 
-                previousIsMeleePressed = isMeleePressed;
+                previousIsMeleePressed = IsMelee;
             }
 
             if (!Context.PlayerController.IsMovementPressed)
@@ -122,7 +120,7 @@ public class PlayerRunState : PlayerState
                 DOTween.To(() => playerAnimationVelocity, x => playerAnimationVelocity = x, 0f, smoothAnimationTransitionTime);
             }
             else if (Mathf.Abs(movement.x) < Context.PlayerController.PlayerData.RunAnimationTreshold && Mathf.Abs(movement.z) < Context.PlayerController.PlayerData.RunAnimationTreshold
-                || IsBlocking || isMeleePressed)
+                || IsBlocking || IsMelee)
             {
                 playerSpeed = Context.PlayerController.PlayerData.WalkSpeed;
                 DOTween.To(() => playerAnimationVelocity, x => playerAnimationVelocity = x, 0.5f, smoothAnimationTransitionTime);
@@ -157,7 +155,7 @@ public class PlayerRunState : PlayerState
 
         Context.CharacterController.Move(movement.normalized * playerSpeed * Time.deltaTime);
 
-        if (isMeleePressed && playerAnimationVelocity == 0.5f)
+        if (IsMelee && playerAnimationVelocity == 0.5f)
         {
             NextState = PlayerStateMachine.EPlayerState.MELEE;
         }
@@ -165,7 +163,7 @@ public class PlayerRunState : PlayerState
 
     private void OnPlayerMeleePressed()
     {
-        isMeleePressed = true;
+        IsMelee = true;
     }
 
     protected override void OnBlockPressed()
@@ -176,11 +174,6 @@ public class PlayerRunState : PlayerState
     protected override void OnBlockReleased()
     {
         base.OnBlockReleased();
-    }
-
-    private void OnMeleeDone()
-    {
-        isMeleePressed = false;
     }
 
     public override void OnTriggerEnter(Collider other)

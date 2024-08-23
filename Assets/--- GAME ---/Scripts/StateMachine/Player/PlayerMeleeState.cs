@@ -59,6 +59,7 @@ public class PlayerMeleeState : PlayerState
     private void OnMeleeDone()
     {
         isMeleeCancellable = false;
+        IsMelee = false;
         NextState = PlayerStateMachine.EPlayerState.IDLE;
     }
 
