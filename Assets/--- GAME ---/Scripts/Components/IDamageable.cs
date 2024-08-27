@@ -4,6 +4,6 @@ using UnityEngine;
 
 public interface IDamageable
 {
-    void ApplyDamage(int amount);
+    void ApplyDamage(AttackInfos attackInfos);
     void ApplyHeal(int amount);
 }

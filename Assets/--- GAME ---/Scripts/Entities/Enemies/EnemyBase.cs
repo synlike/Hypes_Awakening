@@ -6,11 +6,12 @@ public class EnemyBase : EntityBase
 {
     [field: SerializeField] public EnemyData Data { get; private set; }
     public Animator Animator { get; private set; }
-
+    public Rigidbody rb { get; private set; }
 
     void Start()
     {
         Animator = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody>();
 
         MaxHP = Data.MaxHealth;
         CurrentHP = MaxHP;
@@ -22,11 +23,20 @@ public class EnemyBase : EntityBase
 
     }
 
-    public override void ApplyDamage(int amount)
+    public override void ApplyDamage(AttackInfos attackInfos)
     {
-        base.ApplyDamage(amount);
+        base.ApplyDamage(attackInfos);
 
-        // Anim
+        EnemyEvents.Hit.Invoke(attackInfos);
+    }
+
+    public override void OnDie()
+    {
+        base.OnDie();
+    }
+
+    public void HitDone()
+    {
 
     }
 }

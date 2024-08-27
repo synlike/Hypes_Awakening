@@ -25,13 +25,10 @@ public class PlayerBase : EntityBase
 
         MaxHP = Data.MaxHealth;
         CurrentHP = MaxHP;
-
-        //PlayerEvents.MeleeStart.Add(OnMeleeStart);
     }
 
     private void OnDestroy()
     {
-        //PlayerEvents.MeleeStart.Remove(OnMeleeStart);
     }
 
     void Update()

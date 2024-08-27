@@ -14,7 +14,7 @@ public class PlayerStateMachine : StateManager<PlayerStateMachine.EPlayerState>
         RUN,
         MELEE,
         BLOCK,
-        TAKE_DAMAGE,
+        HIT,
         DEATH,
     }
 
@@ -25,19 +25,9 @@ public class PlayerStateMachine : StateManager<PlayerStateMachine.EPlayerState>
         States.Add(EPlayerState.IDLE, new PlayerIdleState(this, EPlayerState.IDLE));
         States.Add(EPlayerState.RUN, new PlayerRunState(this, EPlayerState.RUN));
         States.Add(EPlayerState.MELEE, new PlayerMeleeState(this, EPlayerState.MELEE));
-        //States.Add(EPlayerState.TAKE_DAMAGE, new PlayerTakeDamageState(this, EPlayerState.TAKE_DAMAGE));
+        //States.Add(EPlayerState.HIT, new PlayerHitState(this, EPlayerState.HIT));
         //States.Add(EPlayerState.DEATH, new PlayerDeathState(this, EPlayerState.DEATH));
 
         CurrentState = States[EPlayerState.IDLE];
     }
-
-    //private void OnEnable()
-    //{
-    //    PlayerInput.CharacterControls.Enable();
-    //}
-
-    //private void OnDisable()
-    //{
-    //    PlayerInput.CharacterControls.Disable();
-    //}
 }

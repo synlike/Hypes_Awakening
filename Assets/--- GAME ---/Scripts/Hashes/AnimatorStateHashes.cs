@@ -7,4 +7,6 @@ public static class AnimatorStateHashes
 {
     public static readonly int Velocity = Animator.StringToHash(nameof(Velocity));
     public static readonly int Melee = Animator.StringToHash(nameof(Melee));
+
+    public static readonly int Hit = Animator.StringToHash(nameof(Hit));
 }

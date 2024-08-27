@@ -7,14 +7,13 @@ public class EntityBase : MonoBehaviour, IDamageable, IHealth
     private int _currentHP;
     private int _maxHP;
 
-
     public int CurrentHP { get => _currentHP; set => _currentHP = value; }
     public int MaxHP { get => _maxHP; set => _maxHP = value; }
 
 
-    public virtual void ApplyDamage(int amount)
+    public virtual void ApplyDamage(AttackInfos attackInfos)
     {
-        ModifyHP(-amount);
+        ModifyHP(-attackInfos.DamageAmount);
     }
 
     public virtual void ModifyHP(int value)
