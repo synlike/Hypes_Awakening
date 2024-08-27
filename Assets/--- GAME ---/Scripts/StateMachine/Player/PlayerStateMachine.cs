@@ -5,12 +5,8 @@ using UnityEngine.InputSystem;
 using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class PlayerStateMachine : StateManager<PlayerStateMachine.EPlayerState>
-{ 
-    public CharacterController CharacterController {  get; private set; }
-    public PlayerController PlayerController { get; private set; }
-    public Animator PlayerAnimator { get; private set; }
-    public PlayerInput PlayerInput { get; private set; }
-
+{
+    public PlayerBase Player { get; private set; }
 
     public enum EPlayerState
     {
@@ -18,31 +14,30 @@ public class PlayerStateMachine : StateManager<PlayerStateMachine.EPlayerState>
         RUN,
         MELEE,
         BLOCK,
+        TAKE_DAMAGE,
         DEATH,
     }
 
     private void Awake()
     {
-        CharacterController = GetComponent<CharacterController>();
-        PlayerController = GetComponent<PlayerController>();
-        PlayerAnimator = GetComponent<Animator>();
-        PlayerInput = new PlayerInput();
+        Player = GetComponent<PlayerBase>();
 
         States.Add(EPlayerState.IDLE, new PlayerIdleState(this, EPlayerState.IDLE));
         States.Add(EPlayerState.RUN, new PlayerRunState(this, EPlayerState.RUN));
         States.Add(EPlayerState.MELEE, new PlayerMeleeState(this, EPlayerState.MELEE));
+        //States.Add(EPlayerState.TAKE_DAMAGE, new PlayerTakeDamageState(this, EPlayerState.TAKE_DAMAGE));
         //States.Add(EPlayerState.DEATH, new PlayerDeathState(this, EPlayerState.DEATH));
 
         CurrentState = States[EPlayerState.IDLE];
     }
 
-    private void OnEnable()
-    {
-        PlayerInput.CharacterControls.Enable();
-    }
+    //private void OnEnable()
+    //{
+    //    PlayerInput.CharacterControls.Enable();
+    //}
 
-    private void OnDisable()
-    {
-        PlayerInput.CharacterControls.Disable();
-    }
+    //private void OnDisable()
+    //{
+    //    PlayerInput.CharacterControls.Disable();
+    //}
 }

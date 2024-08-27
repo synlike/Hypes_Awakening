@@ -36,7 +36,7 @@ public class PlayerIdleState : PlayerState
     {
         base.UpdateState();
 
-        if(Context.PlayerController.IsMovementPressed)
+        if(Context.Player.Movement.IsMovementPressed)
         {
             NextState = PlayerStateMachine.EPlayerState.RUN;
         }

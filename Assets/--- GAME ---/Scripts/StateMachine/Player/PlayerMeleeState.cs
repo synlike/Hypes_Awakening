@@ -8,8 +8,6 @@ public class PlayerMeleeState : PlayerState
 {
     private bool isMeleeCancellable = true;
 
-    // CAN TRANSITIONED TO BLOCK STATE AT ANY TIME (NO NEED TO COMBINE ANIMATIONS HERE => BUT BLOCK CAN MELEE COMBINED)
-
     public PlayerMeleeState(PlayerStateMachine context, PlayerStateMachine.EPlayerState key) : base(context, key)
     {
     }
@@ -19,14 +17,12 @@ public class PlayerMeleeState : PlayerState
         base.EnterState();
         Debug.Log("Player entered Melee State");
 
-        //NextState = PlayerStateMachine.EPlayerState.MELEE;
-
         PlayerEvents.MeleePressed.Add(OnPlayerMeleePressed); // Maybe add something to prevent sub / unsub at every switch (only when switching states that cannot attack)
         PlayerAnimationEvents.MeleeDone.Add(OnMeleeDone);
         PlayerAnimationEvents.MeleeCancellable.Add(OnMeleeCancellable);
         PlayerEvents.BlockPressed.Add(OnBlockPressed);
         PlayerEvents.BlockReleased.Add(OnBlockReleased);
-        isMeleeCancellable = true;
+
         OnPlayerMeleePressed();
     }
 
@@ -40,6 +36,9 @@ public class PlayerMeleeState : PlayerState
         PlayerAnimationEvents.MeleeCancellable.Remove(OnMeleeCancellable);
         PlayerEvents.BlockPressed.Remove(OnBlockPressed);
         PlayerEvents.BlockReleased.Remove(OnBlockReleased);
+
+        isMeleeCancellable = true; // Just to be safe
+        IsMelee = false;
     }
 
     public override void UpdateState()
@@ -52,7 +51,7 @@ public class PlayerMeleeState : PlayerState
         if (isMeleeCancellable)
         {
             isMeleeCancellable = false;
-            Context.PlayerAnimator.SetTrigger(AnimatorStateHashes.Melee);
+            Context.Player.Animator.SetTrigger(AnimatorStateHashes.Melee);
         }
     }
 
@@ -63,8 +62,6 @@ public class PlayerMeleeState : PlayerState
 
     private void OnMeleeDone()
     {
-        isMeleeCancellable = false;
-        IsMelee = false;
         NextState = PlayerStateMachine.EPlayerState.IDLE;
     }
 

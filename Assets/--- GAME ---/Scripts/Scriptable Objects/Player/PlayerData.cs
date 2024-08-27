@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,14 +6,19 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "PlayerData", menuName = "ScriptableObjects/Player/PlayerData", order = 1)]
 public class PlayerData : ScriptableObject
 {
-    [field: SerializeField] public float IdleSpeed { get; private set; } = 0.0f;
-    [field: SerializeField] public float WalkSpeed { get; private set; } = 3.0f;
-    [field: SerializeField] public float BlockSpeed { get; private set; } = 4.0f;
-    [field: SerializeField] public float RunSpeed { get; private set; } = 6.0f;
-    [field: SerializeField] public float SmoothAnimationTime { get; private set; } = 0.2f;
-    [field: SerializeField] public float SmoothAnimationTimeMelee { get; private set; } = 0.05f;
-    [field: SerializeField] public float IdleAnimationTreshold { get; private set; } = 0.0f;
-    [field: SerializeField] public float WalkAnimationTreshold { get; private set; } = 0.5f;
-    [field: SerializeField] public float RunAnimationTreshold { get; private set; } = 1.0f;
-    [field: SerializeField] public float TimeToBlockWeightLerp { get; private set; } = 0.2f;
+    [Title("Player Stats")]
+    public int MaxHealth = 5;
+
+    [Title("Movement Parameters")]
+    public float IdleSpeed = 0.0f;
+    public float WalkSpeed = 3.0f;
+    public float RunSpeed = 6.0f;
+
+    [Title("Animation Parameters")]
+    public float SmoothAnimationDuration = 0.2f;
+    public float SmoothAnimationDurationMelee = 0.05f;
+    public float BlockWeightLerpDuration = 0.2f;
+    [Range(0, 1)] public float IdleAnimationTreshold = 0.0f;
+    [Range(0, 1)] public float WalkAnimationTreshold = 0.5f;
+    [Range(0, 1)] public float RunAnimationTreshold = 1.0f;
 }
