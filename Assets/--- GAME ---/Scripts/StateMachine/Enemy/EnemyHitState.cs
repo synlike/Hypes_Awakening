@@ -12,9 +12,16 @@ public class EnemyHitState : EnemyState
     public override void EnterState()
     {
         EnemyAnimationEvents.HitDone.Add(OnHitDone);
-        Context.Enemy.Animator.SetTrigger(AnimatorStateHashes.Hit);
 
-        ApplyKnockback();
+        if (Context.Enemy.CurrentHP > 0)
+        {
+            ApplyKnockback(CurrentAttackTaken.KnockbackAmount);
+        }
+        else
+        {
+            ApplyKnockback(CurrentAttackTaken.KnockbackAmount / 3f);
+            NextState = EnemyStateMachine.EEnemyState.DEATH;
+        }
     }
     public override void ExitState()
     {
@@ -22,9 +29,17 @@ public class EnemyHitState : EnemyState
         CurrentAttackTaken = null;
     }
 
-    private void ApplyKnockback()
+    private void ApplyKnockback(float force)
     {
+        EnemyBase enemy = Context.Enemy;
 
+        Vector3 dir = (enemy.transform.position - CurrentAttackTaken.Origin.position).normalized;
+
+        enemy.transform.LookAt(CurrentAttackTaken.Origin);
+
+        enemy.rb.AddForce(dir * force, ForceMode.Impulse);
+
+        enemy.Animator.SetTrigger(AnimatorStateHashes.Hit);
     }
 
     public override void UpdateState()

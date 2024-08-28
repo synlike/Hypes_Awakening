@@ -26,7 +26,12 @@ public class AttackBase : MonoBehaviour
     {
         if(other.TryGetComponent(out IDamageable hit))
         {
-            hit.ApplyDamage(new AttackInfos(hit, transform, Data.Damage, Data.KnockbackAmount));
+            PlayerBase player = GetComponentInParent<PlayerBase>();
+
+            if (player is null)
+                Debug.LogError("Error : Player is null");
+
+            hit.ApplyDamage(new AttackInfos(hit, player.transform, Data.Damage, Data.KnockbackAmount));
         }
     }
 }

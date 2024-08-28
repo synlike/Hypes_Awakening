@@ -7,5 +7,5 @@ public interface IHealth
     int CurrentHP { get; set; }
     int MaxHP { get; set; }
     void ModifyHP(int value);
-    void OnDie();
+    void OnDeath();
 }

@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6c848cc741f1c743b85a2bec5b43ab7, type: 3}
   m_Name: Skeleton_Minion_Data
   m_EditorClassIdentifier: 
-  MaxHealth: 5
+  MaxHealth: 2
+  CanResurrect: 1
+  DeathDuration: 3

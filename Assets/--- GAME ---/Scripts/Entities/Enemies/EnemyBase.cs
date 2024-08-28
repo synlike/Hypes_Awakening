@@ -8,17 +8,20 @@ public class EnemyBase : EntityBase
     public Animator Animator { get; private set; }
     public Rigidbody rb { get; private set; }
 
-    void Start()
+    protected Collider myCollider;
+
+    protected virtual void Start()
     {
         Animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
+        myCollider = GetComponent<Collider>();
 
         MaxHP = Data.MaxHealth;
         CurrentHP = MaxHP;
     }
 
 
-    void Update()
+    protected virtual void Update()
     {
 
     }
@@ -30,13 +33,13 @@ public class EnemyBase : EntityBase
         EnemyEvents.Hit.Invoke(attackInfos);
     }
 
-    public override void OnDie()
-    {
-        base.OnDie();
-    }
+    public virtual void OnResurrection(){}
 
-    public void HitDone()
+    public override void OnDeath()
     {
+        base.OnDeath();
 
+        rb.isKinematic = true;
+        myCollider.enabled = false;
     }
 }

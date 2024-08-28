@@ -8,4 +8,10 @@ public class EnemyData : ScriptableObject
 {
     [Title("Enemy Stats")]
     public int MaxHealth = 5;
+
+    [Title("Death Infos")]
+    public bool CanResurrect = false;
+    [ShowIf("CanResurrect")]
+    public float DeathDuration = 5.0f;
+
 }

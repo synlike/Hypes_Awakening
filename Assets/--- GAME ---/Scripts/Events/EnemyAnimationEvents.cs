@@ -10,4 +10,11 @@ public class EnemyAnimationEvents : MonoBehaviour
     {
         HitDone.Invoke();
     }
+
+    public static readonly GameEvent ResurrectDone = new();
+
+    public void ResurrectDoneEvent()
+    {
+        ResurrectDone.Invoke();
+    }
 }

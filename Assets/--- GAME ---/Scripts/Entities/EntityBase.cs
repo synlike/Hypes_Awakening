@@ -25,7 +25,7 @@ public class EntityBase : MonoBehaviour, IDamageable, IHealth
         ModifyHP(amount);
     }
 
-    public virtual void OnDie()
+    public virtual void OnDeath()
     {
         // Stuff to do on death
     }
