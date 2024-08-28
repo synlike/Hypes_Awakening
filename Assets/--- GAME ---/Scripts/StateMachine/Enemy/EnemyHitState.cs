@@ -37,7 +37,8 @@ public class EnemyHitState : EnemyState
 
         enemy.transform.LookAt(CurrentAttackTaken.Origin);
 
-        enemy.rb.AddForce(dir * force, ForceMode.Impulse);
+        enemy.rb.AddForce(Vector3.up * 150f, ForceMode.Impulse);
+        enemy.rb.AddForce((dir * force), ForceMode.Impulse);
 
         enemy.Animator.SetTrigger(AnimatorStateHashes.Hit);
     }
