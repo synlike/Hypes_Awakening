@@ -1729,6 +1729,7 @@ GameObject:
   - component: {fileID: 5704286554002385103}
   - component: {fileID: 5522837782459804166}
   - component: {fileID: 7433290731419368551}
+  - component: {fileID: 3381252789497574830}
   - component: {fileID: 7595422617627782465}
   m_Layer: 0
   m_Name: Skeleton_Minion
@@ -1856,6 +1857,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eeeb3bc03f98bca4981a01feb9d6c82b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3381252789497574830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5231261639183118452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65680a3ef7ff0314b9269aa44feff3b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &7595422617627782465

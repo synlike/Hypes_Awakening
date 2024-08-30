@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6c848cc741f1c743b85a2bec5b43ab7, type: 3}
   m_Name: Skeleton_Minion_Data
   m_EditorClassIdentifier: 
-  entity: {fileID: 3190380522640086316, guid: a2672c8e9bd1e8e4686ce5760f591673, type: 3}
   MaxHealth: 2
+  PatrolPauseDuration: 4
+  WalkSpeed: 1.8
+  RunSpeed: 3
   CanResurrect: 1
   DeathDuration: 3

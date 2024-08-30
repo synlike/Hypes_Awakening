@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemyBase : EntityBase
 {
     [field: SerializeField] public EnemyData Data { get; private set; }
+    public EnemyPatrolling Patrolling { get; private set; }
     public Animator Animator { get; private set; }
     public Rigidbody rb { get; private set; }
 
@@ -16,6 +17,7 @@ public class EnemyBase : EntityBase
         Animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
         myCollider = GetComponent<Collider>();
+        Patrolling = GetComponent<EnemyPatrolling>();
 
         MaxHP = Data.MaxHealth;
         CurrentHP = MaxHP;
