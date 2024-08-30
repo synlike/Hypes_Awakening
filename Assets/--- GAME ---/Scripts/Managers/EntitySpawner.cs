@@ -64,7 +64,10 @@ public class EntitySpawner : MonoBehaviour, ISpawnable
 
     public void ActivateEntity()
     {
-        entity.transform.position = transform.position;
-        entityGameObject.SetActive(true);
+        if(!entityGameObject.activeSelf)
+        {
+            entity.transform.position = transform.position;
+            entityGameObject.SetActive(true);
+        }
     }
 }

@@ -16,6 +16,7 @@ public class EnemyData : EntityData
 
     [Title("Attack Infos")]
     public float PauseBetweenAttacksDuration = 2.0f;
+    public float ChaseDistance = 3.0f;
 
     [Title("Death Infos")]
     public bool CanResurrect = false;

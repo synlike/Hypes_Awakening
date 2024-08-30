@@ -5,13 +5,31 @@ using UnityEngine;
 
 public class PlayerDetection : MonoBehaviour
 {
-    public PlayerBase Player { get; private set; }
+    private PlayerBase _player;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent(out PlayerBase player))
         {
-            Player = player;
+            _player = player;
         }
+    }
+
+    public bool IsPlayerDetected()
+    {
+        return _player != null;
+    }
+
+    public Vector3 GetTargetPosition()
+    {
+        if (_player == null)
+            Debug.LogError("Player is null, check before using Get Target Position");
+
+        return _player.transform.position;
+    }
+
+    public void EmptyTarget()
+    {
+        _player = null;
     }
 }
