@@ -17,9 +17,9 @@ public class PlayerSpawnRange : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.TryGetComponent(out ISpawnable spawnable))
+        if (other.TryGetComponent(out EntityBase entity))
         {
-            spawnable.DeactivateEntity();
+            entity.transform.parent.gameObject.SetActive(false);
         }
     }
 }

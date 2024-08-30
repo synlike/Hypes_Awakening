@@ -11,4 +11,5 @@ public static class AnimatorStateHashes
     public static readonly int Hit = Animator.StringToHash(nameof(Hit));
     public static readonly int Death = Animator.StringToHash(nameof(Death));
     public static readonly int Resurrect = Animator.StringToHash(nameof(Resurrect));
+    public static readonly int Attack = Animator.StringToHash(nameof(Attack));
 }

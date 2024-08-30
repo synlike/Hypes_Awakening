@@ -14,6 +14,9 @@ public class EnemyData : EntityData
     public float WalkSpeed = 3.0f;
     public float RunSpeed = 5.0f;
 
+    [Title("Attack Infos")]
+    public float PauseBetweenAttacksDuration = 2.0f;
+
     [Title("Death Infos")]
     public bool CanResurrect = false;
     [ShowIf("CanResurrect")]

@@ -10,7 +10,7 @@ public class EntitySpawner : MonoBehaviour, ISpawnable
 {
     [Title("Prefab")]
     [ValidateInput("MustBeEntity", "This field should be an entity prefab.")]
-    public GameObject _entity;
+    public GameObject prefab;
     private bool MustBeEntity(GameObject gameObject)
     {
         if (gameObject.GetComponentInChildren<EntityBase>() != null)
@@ -19,7 +19,8 @@ public class EntitySpawner : MonoBehaviour, ISpawnable
             return false;
     }
 
-    private GameObject _entityGameObject;
+    private GameObject entityGameObject;
+    private EntityBase entity;
 
     [Title("Death Infos")]
     public bool DoPatrol = false;
@@ -34,7 +35,11 @@ public class EntitySpawner : MonoBehaviour, ISpawnable
 
     private void SpawnEnemy()
     {
-        _entityGameObject = Instantiate(_entity, transform);
+        entityGameObject = Instantiate(prefab, transform);
+        entity = entityGameObject.GetComponentInChildren<EntityBase>();
+
+        if (entity is null)
+            Debug.LogError("Couldn't find entity base in prefab");
 
         if(DoPatrol)
         {
@@ -44,7 +49,7 @@ public class EntitySpawner : MonoBehaviour, ISpawnable
                 return;
             }
             
-            EnemyPatrolling enemyPatrolling = _entityGameObject.GetComponentInChildren<EnemyPatrolling>();
+            EnemyPatrolling enemyPatrolling = entityGameObject.GetComponentInChildren<EnemyPatrolling>();
 
             if (enemyPatrolling is not null)
             {
@@ -54,17 +59,12 @@ public class EntitySpawner : MonoBehaviour, ISpawnable
                 Debug.LogError("Couldn't find enemy patrolling script");
         }
 
-        _entityGameObject.SetActive(false);
+        entityGameObject.SetActive(false);
     }
 
     public void ActivateEntity()
     {
-        _entityGameObject.SetActive(true);
-        _entityGameObject.transform.position = transform.position;
-    }
-
-    public void DeactivateEntity()
-    {
-        _entityGameObject.SetActive(false);
+        entity.transform.position = transform.position;
+        entityGameObject.SetActive(true);
     }
 }

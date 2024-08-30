@@ -78,4 +78,14 @@ public class EnemyWanderState : EnemyState
         
         return waypoints[currentIndex];
     }
+
+
+    public override void OnTriggerEnter(Collider other)
+    {
+        if (other.TryGetComponent(out PlayerBase player))
+        {
+            NextState = EnemyStateMachine.EEnemyState.AGGRESSIVE;
+        }
+    }
+
 }

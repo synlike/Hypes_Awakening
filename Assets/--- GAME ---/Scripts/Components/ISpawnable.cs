@@ -5,5 +5,4 @@ using UnityEngine;
 public interface ISpawnable
 {
     void ActivateEntity();
-    void DeactivateEntity();
 }

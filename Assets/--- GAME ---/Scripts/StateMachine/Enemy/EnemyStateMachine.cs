@@ -13,6 +13,7 @@ public class EnemyStateMachine : StateManager<EnemyStateMachine.EEnemyState>
         HIT,
         DEATH,
         RESURRECT,
+        ATTACK,
     }
 
     protected virtual void Awake()
