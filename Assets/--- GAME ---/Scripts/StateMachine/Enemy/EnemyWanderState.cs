@@ -10,6 +10,7 @@ public class EnemyWanderState : EnemyState
 
     public override void EnterState()
     {
+        NextState = EnemyStateMachine.EEnemyState.WANDER;
         base.EnterState();
     }
 

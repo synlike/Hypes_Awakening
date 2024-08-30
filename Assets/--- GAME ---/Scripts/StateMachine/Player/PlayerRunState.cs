@@ -32,14 +32,13 @@ public class PlayerRunState : PlayerState
     {
         base.EnterState();
 
+        NextState = PlayerStateMachine.EPlayerState.RUN;
+
         //Debug.Log("Player entered Run State");
         PlayerEvents.BlockPressed.Add(OnBlockPressed);
         PlayerEvents.BlockReleased.Add(OnBlockReleased);
-        PlayerEvents.MeleePressed.Add(OnPlayerMeleePressed);
 
         smoothAnimationTransitionDuration = Context.Player.Data.SmoothAnimationDuration;
-
-        NextState = PlayerStateMachine.EPlayerState.RUN;
     }
 
     public override void ExitState()
@@ -56,14 +55,13 @@ public class PlayerRunState : PlayerState
 
         PlayerEvents.BlockPressed.Remove(OnBlockPressed);
         PlayerEvents.BlockReleased.Remove(OnBlockReleased);
-        PlayerEvents.MeleePressed.Remove(OnPlayerMeleePressed);
     }
 
     public override void UpdateState()
     {
         base.UpdateState();
 
-        if (!Context.Player.Movement.IsMovementPressed)
+        if (!Context.Player.Inputs.IsMovementPressed)
         {
             if (playerAnimationVelocity < 0.05f)
             {
@@ -73,7 +71,7 @@ public class PlayerRunState : PlayerState
             }
         }
 
-        currentMovement = new Vector3(Context.Player.Movement.CurrentMovementInput.x, 0.0f, Context.Player.Movement.CurrentMovementInput.y);
+        currentMovement = new Vector3(Context.Player.Inputs.CurrentMovementInput.x, 0.0f, Context.Player.Inputs.CurrentMovementInput.y);
 
         HandleMovement();
         HandleRotation();
@@ -87,7 +85,7 @@ public class PlayerRunState : PlayerState
         positionToLookAt.y = 0.0f;
         positionToLookAt.z = currentMovement.z;
 
-        if (Context.Player.Movement.IsMovementPressed)
+        if (Context.Player.Inputs.IsMovementPressed)
         {
             Quaternion targetRotation = Quaternion.LookRotation(positionToLookAt);
             Context.transform.rotation = targetRotation; // Snap
@@ -98,17 +96,17 @@ public class PlayerRunState : PlayerState
     {
         Vector3 movement = currentMovement;
 
-        bool canRun = Context.Player.Movement.CanRun;
+        bool canRun = Context.Player.Inputs.CanRun;
 
-        if (previousMovement != currentMovement || previousIsMeleePressed != IsMelee || previousIsBlocking != IsBlocking || previousCanRun != canRun)
+        if (previousMovement != currentMovement || previousIsMeleePressed != Context.Player.Inputs.IsMelee || previousIsBlocking != Context.Player.Inputs.IsBlocking || previousCanRun != canRun)
         {
             smoothAnimationTransitionDuration = Context.Player.Data.SmoothAnimationDuration;
             previousMovement = currentMovement;
-            previousIsMeleePressed = IsMelee;
-            previousIsBlocking = IsBlocking;
+            previousIsMeleePressed = Context.Player.Inputs.IsMelee;
+            previousIsBlocking = Context.Player.Inputs.IsBlocking;
             previousCanRun = canRun;
 
-            if (IsMelee)
+            if (Context.Player.Inputs.IsMelee)
             {
                 //Debug.LogWarning("SETTING STOP MELEE");
                 playerSpeed = Context.Player.Data.IdleSpeed;
@@ -116,14 +114,14 @@ public class PlayerRunState : PlayerState
                 smoothAnimationTransitionDuration = Context.Player.Data.SmoothAnimationDurationMelee;
                 startBlendValue = playerAnimationVelocity;
             }
-            else if (!Context.Player.Movement.IsMovementPressed)
+            else if (!Context.Player.Inputs.IsMovementPressed)
             {
                 //Debug.LogWarning("SETTING STOP");
                 playerSpeed = Context.Player.Data.IdleSpeed;
                 goalBlendValue = Context.Player.Data.IdleAnimationTreshold;
                 startBlendValue = playerAnimationVelocity;
             }
-            else if (!canRun || IsBlocking)
+            else if (!canRun || Context.Player.Inputs.IsBlocking)
             {
                 //Debug.LogWarning("SETTING WALK");
                 playerSpeed = Context.Player.Data.WalkSpeed;
@@ -174,15 +172,10 @@ public class PlayerRunState : PlayerState
 
         Context.Player.CharacterController.Move(movement.normalized * playerSpeed * Time.deltaTime);
 
-        if (IsMelee && playerAnimationVelocity == Context.Player.Data.IdleAnimationTreshold)
+        if (Context.Player.Inputs.IsMelee && playerAnimationVelocity == Context.Player.Data.IdleAnimationTreshold)
         {
             NextState = PlayerStateMachine.EPlayerState.MELEE;
         }
-    }
-
-    private void OnPlayerMeleePressed()
-    {
-        IsMelee = true;
     }
 
     protected override void OnBlockPressed()

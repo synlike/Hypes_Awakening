@@ -11,33 +11,36 @@ public class EnemyHitState : EnemyState
 
     public override void EnterState()
     {
-        EnemyAnimationEvents.HitDone.Add(OnHitDone);
+        NextState = EnemyStateMachine.EEnemyState.HIT;
 
+        EnemyAnimationEvents.HitDone.Add(OnHitDone);
         if (Context.Enemy.CurrentHP > 0)
         {
-            ApplyKnockback(CurrentAttackTaken.KnockbackAmount);
+
+            Context.Enemy.Animator.SetTrigger(AnimatorStateHashes.Hit);
+            ApplyKnockback(Context.Enemy.CurrentAttackTaken.KnockbackAmount);
         }
         else
         {
-            ApplyKnockback(CurrentAttackTaken.KnockbackAmount / 3f);
+            ApplyKnockback(Context.Enemy.CurrentAttackTaken.KnockbackAmount / 3f);
             NextState = EnemyStateMachine.EEnemyState.DEATH;
         }
     }
     public override void ExitState()
     {
         EnemyAnimationEvents.HitDone.Remove(OnHitDone);
-        CurrentAttackTaken = null;
+        Context.Enemy.NullifyCurrentAttackTaken();
     }
 
     private void ApplyKnockback(float force)
     {
         EnemyBase enemy = Context.Enemy;
 
-        Vector3 dir = (enemy.transform.position - CurrentAttackTaken.Origin.position).normalized;
+        Vector3 dir = (enemy.transform.position - Context.Enemy.CurrentAttackTaken.Origin.position).normalized;
 
-        enemy.transform.LookAt(CurrentAttackTaken.Origin);
+        enemy.transform.LookAt(Context.Enemy.CurrentAttackTaken.Origin);
 
-        enemy.rb.AddForce(Vector3.up * 150f, ForceMode.Impulse);
+        enemy.rb.AddForce(Vector3.up * 50f, ForceMode.Impulse);
         enemy.rb.AddForce((dir * force), ForceMode.Impulse);
 
         enemy.Animator.SetTrigger(AnimatorStateHashes.Hit);

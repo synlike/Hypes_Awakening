@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "EnemyData", menuName = "ScriptableObjects/Enemy/EnemyData", order = 1)]
-public class EnemyData : ScriptableObject
+public class EnemyData : EntityData
 {
     [Title("Enemy Stats")]
     public int MaxHealth = 5;

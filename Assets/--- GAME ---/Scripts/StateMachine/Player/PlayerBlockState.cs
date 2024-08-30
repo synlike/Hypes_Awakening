@@ -23,6 +23,8 @@ public class PlayerBlockState : PlayerState
     public override void EnterState()
     {
         Debug.Log("Player entered Block State");
+
+        NextState = PlayerStateMachine.EPlayerState.BLOCK;
     }
 
     public override void ExitState()

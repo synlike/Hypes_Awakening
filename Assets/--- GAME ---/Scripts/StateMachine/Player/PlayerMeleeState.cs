@@ -15,6 +15,9 @@ public class PlayerMeleeState : PlayerState
     public override void EnterState()
     {
         base.EnterState();
+
+        NextState = PlayerStateMachine.EPlayerState.MELEE;
+
         Debug.Log("Player entered Melee State");
 
         PlayerEvents.MeleePressed.Add(OnPlayerMeleePressed); // Maybe add something to prevent sub / unsub at every switch (only when switching states that cannot attack)
@@ -29,6 +32,7 @@ public class PlayerMeleeState : PlayerState
     public override void ExitState()
     {
         base.ExitState();
+
         Debug.Log("Player exited Melee State");
 
         PlayerEvents.MeleePressed.Remove(OnPlayerMeleePressed);
@@ -38,7 +42,6 @@ public class PlayerMeleeState : PlayerState
         PlayerEvents.BlockReleased.Remove(OnBlockReleased);
 
         isMeleeCancellable = true; // Just to be safe
-        IsMelee = false;
     }
 
     public override void UpdateState()

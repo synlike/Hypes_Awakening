@@ -12,18 +12,11 @@ public class PlayerState : BaseState<PlayerStateMachine.EPlayerState>
 
     public PlayerStateMachine Context { get; private set; }
 
-    protected static PlayerStateMachine.EPlayerState NextState;
-
-    protected static bool AllowActions = true;
-
-    protected static bool IsBlocking = false;
-
-    protected static bool IsMelee = false;
-
+    public PlayerStateMachine.EPlayerState NextState { get; protected set; }
 
     // Block layer lerp
-    protected static float StartBlockWeightValue = 0.0f;
-    protected static float blockWeightLerpTimer = 0.0f;
+    public float StartBlockWeightValue { get; private set; } = 0.0f;
+    public float BlockWeightLerpTimer { get; private set; } = 0.0f;
 
     public PlayerState(PlayerStateMachine context, PlayerStateMachine.EPlayerState key) : base(key)
     {
@@ -32,6 +25,7 @@ public class PlayerState : BaseState<PlayerStateMachine.EPlayerState>
 
     public override void EnterState()
     {
+        InitBlockLerp();
     }
 
     public override void ExitState()
@@ -40,28 +34,28 @@ public class PlayerState : BaseState<PlayerStateMachine.EPlayerState>
 
     public override void UpdateState()
     {
-        if (IsBlocking && Context.Player.Animator.GetLayerWeight(BLOCK_LAYER_ID) != LAYER_WEIGHT_ON)
+        if (Context.Player.Inputs.IsBlocking && Context.Player.Animator.GetLayerWeight(BLOCK_LAYER_ID) != LAYER_WEIGHT_ON)
         {
             // lerp layer weight to 1
             Context.Player.Animator.SetLayerWeight
-                (BLOCK_LAYER_ID, Mathf.Lerp(StartBlockWeightValue, LAYER_WEIGHT_ON, blockWeightLerpTimer / Context.Player.Data.BlockWeightLerpDuration));
+                (BLOCK_LAYER_ID, Mathf.Lerp(StartBlockWeightValue, LAYER_WEIGHT_ON, BlockWeightLerpTimer / Context.Player.Data.BlockWeightLerpDuration));
 
-            blockWeightLerpTimer += Time.deltaTime;
+            BlockWeightLerpTimer += Time.deltaTime;
 
-            if(blockWeightLerpTimer >= Context.Player.Data.BlockWeightLerpDuration)
+            if(BlockWeightLerpTimer >= Context.Player.Data.BlockWeightLerpDuration)
             {
                 Context.Player.Animator.SetLayerWeight(BLOCK_LAYER_ID, LAYER_WEIGHT_ON);
             }
         }
-        else if (!IsBlocking && Context.Player.Animator.GetLayerWeight(BLOCK_LAYER_ID) != LAYER_WEIGHT_OFF)
+        else if (!Context.Player.Inputs.IsBlocking && Context.Player.Animator.GetLayerWeight(BLOCK_LAYER_ID) != LAYER_WEIGHT_OFF)
         {
             // lerp layer weight to 0
             Context.Player.Animator.SetLayerWeight
-                (BLOCK_LAYER_ID, Mathf.Lerp(StartBlockWeightValue, LAYER_WEIGHT_OFF, blockWeightLerpTimer / Context.Player.Data.BlockWeightLerpDuration));
+                (BLOCK_LAYER_ID, Mathf.Lerp(StartBlockWeightValue, LAYER_WEIGHT_OFF, BlockWeightLerpTimer / Context.Player.Data.BlockWeightLerpDuration));
 
-            blockWeightLerpTimer += Time.deltaTime;
+            BlockWeightLerpTimer += Time.deltaTime;
 
-            if (blockWeightLerpTimer >= Context.Player.Data.BlockWeightLerpDuration)
+            if (BlockWeightLerpTimer >= Context.Player.Data.BlockWeightLerpDuration)
             {
                 Context.Player.Animator.SetLayerWeight(BLOCK_LAYER_ID, LAYER_WEIGHT_OFF);
             }
@@ -75,19 +69,18 @@ public class PlayerState : BaseState<PlayerStateMachine.EPlayerState>
 
     protected virtual void OnBlockPressed()
     {
-        InitBlockLerp(true);
+        InitBlockLerp();
     }
 
     protected virtual void OnBlockReleased()
     {
-        InitBlockLerp(false);
+        InitBlockLerp();
     }
 
-    private void InitBlockLerp(bool isBlocking)
+    private void InitBlockLerp()
     {
         StartBlockWeightValue = Context.Player.Animator.GetLayerWeight(BLOCK_LAYER_ID);
-        blockWeightLerpTimer = Context.Player.Data.BlockWeightLerpDuration - blockWeightLerpTimer;
-        IsBlocking = isBlocking;
+        BlockWeightLerpTimer = Mathf.Clamp(Context.Player.Data.BlockWeightLerpDuration - BlockWeightLerpTimer, 0f, Mathf.Infinity);
     }
 
     public override void OnTriggerEnter(Collider other)

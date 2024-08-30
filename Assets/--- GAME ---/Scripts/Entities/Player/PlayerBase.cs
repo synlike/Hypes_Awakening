@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public enum EAttack_Types
 { 
@@ -14,13 +15,14 @@ public class PlayerBase : EntityBase
     [field: SerializeField] public AttackBase MeleeAttack { get; private set; }
 
     public CharacterController CharacterController { get; private set; }
-    public PlayerMovement Movement { get; private set; }
+    public PlayerInputManager Inputs { get; private set; }
     public Animator Animator { get; private set; }
+
 
     void Awake()
     {
         CharacterController = GetComponent<CharacterController>();
-        Movement = GetComponent<PlayerMovement>();
+        Inputs = GetComponent<PlayerInputManager>();
         Animator = GetComponent<Animator>();
 
         MaxHP = Data.MaxHealth;

@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.UI.Image;
 
 public class AttackInfos
 {
-    public IDamageable Damageable { get; private set; }
+    public IDamageable Damageable;
     public Transform Origin { get; private set; }
     public int DamageAmount { get; private set; }
     public float KnockbackAmount { get; private set; }
@@ -26,12 +27,12 @@ public class AttackBase : MonoBehaviour
     {
         if(other.TryGetComponent(out IDamageable hit))
         {
-            PlayerBase player = GetComponentInParent<PlayerBase>();
+            EntityBase attackGiver = GetComponentInParent<EntityBase>();
 
-            if (player is null)
-                Debug.LogError("Error : Player is null");
+            if (attackGiver is null)
+                Debug.LogError("Error : Attack Giver is null");
 
-            hit.ApplyDamage(new AttackInfos(hit, player.transform, Data.Damage, Data.KnockbackAmount));
+            hit.ApplyDamage(new AttackInfos(hit, attackGiver.transform, Data.Damage, Data.KnockbackAmount));
         }
     }
 }

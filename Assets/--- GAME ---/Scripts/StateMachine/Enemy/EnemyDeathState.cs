@@ -11,6 +11,8 @@ public class EnemyDeathState : EnemyState
 
     public override void EnterState()
     {
+        NextState = EnemyStateMachine.EEnemyState.DEATH;
+
         Context.Enemy.Animator.SetTrigger(AnimatorStateHashes.Death);
     }
 

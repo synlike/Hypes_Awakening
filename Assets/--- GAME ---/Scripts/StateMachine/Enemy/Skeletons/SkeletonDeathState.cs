@@ -13,6 +13,8 @@ public class SkeletonDeathState : EnemyDeathState
 
     public override void EnterState()
     {
+        NextState = EnemyStateMachine.EEnemyState.DEATH;
+
         deathTimer = 0.0f;
         Context.Enemy.Animator.SetTrigger(AnimatorStateHashes.Death);
 

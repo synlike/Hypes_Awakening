@@ -10,6 +10,8 @@ public class SkeletonResurrectState : EnemyState
 
     public override void EnterState()
     {
+        NextState = EnemyStateMachine.EEnemyState.RESURRECT;
+
         EnemyAnimationEvents.ResurrectDone.Add(OnResurrectionDone);
 
         Context.Enemy.Animator.SetTrigger(AnimatorStateHashes.Resurrect);

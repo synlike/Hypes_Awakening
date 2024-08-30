@@ -8,6 +8,7 @@ public class EnemyBase : EntityBase
     public Animator Animator { get; private set; }
     public Rigidbody rb { get; private set; }
 
+
     protected Collider myCollider;
 
     protected virtual void Start()
@@ -29,8 +30,6 @@ public class EnemyBase : EntityBase
     public override void ApplyDamage(AttackInfos attackInfos)
     {
         base.ApplyDamage(attackInfos);
-
-        EnemyEvents.Hit.Invoke(attackInfos);
     }
 
     public virtual void OnResurrection(){}

@@ -7,9 +7,7 @@ public class EnemyState : BaseState<EnemyStateMachine.EEnemyState>
 {
     public EnemyStateMachine Context { get; private set; }
 
-    public static AttackInfos CurrentAttackTaken { get; protected set; }
-
-    protected static EnemyStateMachine.EEnemyState NextState;
+    public EnemyStateMachine.EEnemyState NextState { get; protected set; }
 
     public EnemyState(EnemyStateMachine context, EnemyStateMachine.EEnemyState key) : base(key)
     {
@@ -34,7 +32,6 @@ public class EnemyState : BaseState<EnemyStateMachine.EEnemyState>
     {
         if (ReferenceEquals(attackInfos.Damageable, Context.Enemy))
         {
-            CurrentAttackTaken = attackInfos;
             NextState = EnemyStateMachine.EEnemyState.HIT;
         }
     }

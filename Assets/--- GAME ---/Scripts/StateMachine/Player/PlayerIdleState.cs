@@ -13,8 +13,8 @@ public class PlayerIdleState : PlayerState
     {
         base.EnterState();
 
-        Debug.Log("Player entered Idle State");
         NextState = PlayerStateMachine.EPlayerState.IDLE;
+        Debug.Log("Player entered Idle State");
 
         PlayerEvents.BlockPressed.Add(OnBlockPressed);
         PlayerEvents.BlockReleased.Add(OnBlockReleased);
@@ -36,7 +36,7 @@ public class PlayerIdleState : PlayerState
     {
         base.UpdateState();
 
-        if(Context.Player.Movement.IsMovementPressed)
+        if(Context.Player.Inputs.IsMovementPressed)
         {
             NextState = PlayerStateMachine.EPlayerState.RUN;
         }
@@ -54,7 +54,7 @@ public class PlayerIdleState : PlayerState
 
     private void OnPlayerMeleePressed()
     {
-        if (AllowActions && NextState != PlayerStateMachine.EPlayerState.MELEE) // second condition no useful ?
+        if (Context.Player.Inputs.AllowActions && NextState != PlayerStateMachine.EPlayerState.MELEE) // second condition no useful ?
         {
             NextState = PlayerStateMachine.EPlayerState.MELEE;
         }

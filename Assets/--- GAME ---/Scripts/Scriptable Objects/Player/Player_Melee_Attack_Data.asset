@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Player_Melee_Attack_Data
   m_EditorClassIdentifier: 
   Damage: 1
-  KnockbackAmount: 350
+  KnockbackAmount: 200
