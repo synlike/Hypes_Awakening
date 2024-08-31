@@ -10,6 +10,10 @@ public class EnemyWanderState : EnemyState
     private int currentIndex = 0;
     private float patrolTimer = 0.0f;
 
+    // No need because patrol is fixed points
+    //private float UpdateSpeed = 0.1f; // Time between destination recalculation (to avoid doing it every frame)
+    //private float UpdateTimer = 0.0f;
+
     private bool canPatrol = false;
 
     public EnemyWanderState(EnemyStateMachine context, EnemyStateMachine.EEnemyState key) : base(context, key)
@@ -36,12 +40,14 @@ public class EnemyWanderState : EnemyState
 
         if(canPatrol)
         {
+            Context.Enemy.NavAgent.SetDestination(currentTarget.position);
+
             Vector3 position = Context.Enemy.transform.position;
             position.y = 0f;
 
             if (position != currentTarget.position)
             {
-                Context.Enemy.transform.position = Vector3.MoveTowards(position, currentTarget.position, Context.Enemy.Data.WalkSpeed * Time.deltaTime);
+                Context.Enemy.NavAgent.SetDestination(currentTarget.position);
             }
             else
             {
@@ -50,7 +56,6 @@ public class EnemyWanderState : EnemyState
                 if (patrolTimer >= Context.Enemy.Data.PatrolPauseDuration)
                 {
                     currentTarget = GetNextWaypoint();
-                    Context.Enemy.transform.LookAt(currentTarget);
                     Context.Enemy.Animator.SetFloat(AnimatorStateHashes.Velocity, 0.5f);
                     patrolTimer = 0.0f;
                 }
@@ -59,6 +64,32 @@ public class EnemyWanderState : EnemyState
                     Context.Enemy.Animator.SetFloat(AnimatorStateHashes.Velocity, 0.0f);
                 }
             }
+
+            // REDO WITH NAVMESH
+
+            //Vector3 position = Context.Enemy.transform.position;
+            //position.y = 0f;
+
+            //if (position != currentTarget.position)
+            //{
+            //    Context.Enemy.transform.position = Vector3.MoveTowards(position, currentTarget.position, Context.Enemy.Data.WalkSpeed * Time.deltaTime);
+            //}
+            //else
+            //{
+            //    patrolTimer += Time.deltaTime;
+
+            //    if (patrolTimer >= Context.Enemy.Data.PatrolPauseDuration)
+            //    {
+            //        currentTarget = GetNextWaypoint();
+            //        Context.Enemy.transform.LookAt(currentTarget);
+            //        Context.Enemy.Animator.SetFloat(AnimatorStateHashes.Velocity, 0.5f);
+            //        patrolTimer = 0.0f;
+            //    }
+            //    else
+            //    {
+            //        Context.Enemy.Animator.SetFloat(AnimatorStateHashes.Velocity, 0.0f);
+            //    }
+            //}
         }
     }
 

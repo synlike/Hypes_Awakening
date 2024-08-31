@@ -13,6 +13,8 @@ public class EnemyHitState : EnemyState
     {
         NextState = EnemyStateMachine.EEnemyState.HIT;
 
+        Context.Enemy.NavAgent.isStopped = true;
+
         EnemyAnimationEvents.HitDone.Add(OnHitDone);
         if (Context.Enemy.CurrentHP > 0)
         {

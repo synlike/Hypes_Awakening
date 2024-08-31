@@ -28,6 +28,14 @@ public class PlayerDetection : MonoBehaviour
         return _player.transform.position;
     }
 
+    public Vector3 GetTargetAverageVelocity()
+    {
+        if (_player == null)
+            Debug.LogError("Player is null, check before using Get Target Position");
+
+        return _player.AverageVelocity;
+    }
+
     public void EmptyTarget()
     {
         _player = null;

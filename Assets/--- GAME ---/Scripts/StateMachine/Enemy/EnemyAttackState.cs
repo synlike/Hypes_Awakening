@@ -16,7 +16,7 @@ public class EnemyAttackState : EnemyState
     {
         base.EnterState();
 
-        if(Context.Enemy.Detection.IsPlayerDetected())
+        if (Context.Enemy.Detection.IsPlayerDetected())
         {
             Context.Enemy.transform.LookAt(Context.Enemy.Detection.GetTargetPosition());
         }

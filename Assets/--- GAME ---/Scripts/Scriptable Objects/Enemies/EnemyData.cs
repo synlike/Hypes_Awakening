@@ -14,6 +14,15 @@ public class EnemyData : EntityData
     public float WalkSpeed = 3.0f;
     public float RunSpeed = 5.0f;
 
+    [Title("Chasing Infos")]
+    public bool UseMovementPrediction = true;
+    [Range(-1f, 1f)]
+    public float MovementPredictionTreshold = 0f;
+    [Range(0.25f, 2f)]
+    public float MovementPredictionTime = 1f;
+    [Range(0.0f, 1f)]
+    public float RepathingDelay = 0.1f;
+
     [Title("Attack Infos")]
     public float PauseBetweenAttacksDuration = 2.0f;
     public float ChaseDistance = 3.0f;

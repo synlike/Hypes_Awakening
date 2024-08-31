@@ -1,15 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyBase : EntityBase
 {
     [field: SerializeField] public EnemyData Data { get; private set; }
+    public NavMeshAgent NavAgent { get; private set; }
     public EnemyPatrolling Patrolling { get; private set; }
     public PlayerDetection Detection { get; private set; }
     public Animator Animator { get; private set; }
     public Rigidbody rb { get; private set; }
-
 
     protected Collider myCollider;
 
@@ -20,6 +21,7 @@ public class EnemyBase : EntityBase
         myCollider = GetComponent<Collider>();
         Patrolling = GetComponent<EnemyPatrolling>();
         Detection = GetComponentInChildren<PlayerDetection>();
+        NavAgent = GetComponent<NavMeshAgent>();
 
         MaxHP = Data.MaxHealth;
         CurrentHP = MaxHP;
