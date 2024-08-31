@@ -4,8 +4,8 @@ using UnityEngine;
 
 public interface IHealth
 {
-    int CurrentHP { get; set; }
-    int MaxHP { get; set; }
-    void ModifyHP(int value);
+    float CurrentHP { get; set; }
+    float MaxHP { get; set; }
+    void ModifyHP(float value);
     void OnDeath();
 }

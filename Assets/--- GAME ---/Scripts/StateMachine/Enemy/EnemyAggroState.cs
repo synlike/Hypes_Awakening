@@ -45,7 +45,7 @@ public class EnemyAggroState : EnemyState
                 Context.Enemy.Detection.EmptyTarget();
                 NextState = EnemyStateMachine.EEnemyState.WANDER;
             }
-            else if (distance > 2f) // distance to chase
+            else if (distance > Context.Enemy.Data.ChaseDistance) // distance to chase
             {
                 if (RepathingTimer >= Context.Enemy.Data.RepathingDelay)
                 {

@@ -7,7 +7,7 @@ public interface IDamageable
     AttackInfos CurrentAttackTaken { get;}
 
     void ApplyDamage(AttackInfos attackInfos);
-    void ApplyHeal(int amount);
+    void ApplyHeal(float amount);
     void NullifyCurrentAttackTaken();
 
 }

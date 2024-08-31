@@ -12,10 +12,10 @@ TagManager:
   - Water
   - UI
   - Waypoint
-  - 
-  - 
-  - 
-  - 
+  - Damageable
+  - Obstacle
+  - Weapon
+  - Spawn
   - 
   - 
   - 

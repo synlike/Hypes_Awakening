@@ -1,16 +1,14 @@
-using Sirenix.Utilities.Editor;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyAttackState : EnemyState
+public class RogueThrowState : EnemyState
 {
     private float pauseTimer;
 
-    public EnemyAttackState(EnemyStateMachine context, EnemyStateMachine.EEnemyState key) : base(context, key)
+    public RogueThrowState(EnemyStateMachine context, EnemyStateMachine.EEnemyState key) : base(context, key)
     {
     }
-
 
     public override void EnterState()
     {
@@ -24,7 +22,7 @@ public class EnemyAttackState : EnemyState
         NextState = EnemyStateMachine.EEnemyState.ATTACK;
 
         Context.Enemy.Animator.SetFloat(AnimatorStateHashes.Velocity, 0f);
-        Context.Enemy.Animator.SetTrigger(AnimatorStateHashes.Attack);
+        Context.Enemy.Animator.SetTrigger(AnimatorStateHashes.Throw);
     }
 
     public override void UpdateState()
@@ -32,17 +30,17 @@ public class EnemyAttackState : EnemyState
         pauseTimer += Time.deltaTime;
 
         // Transition if player out of range
-        if(Context.Enemy.Detection.IsPlayerDetected())
+        if (Context.Enemy.Detection.IsPlayerDetected())
         {
             float distance = Vector3.Distance(Context.Enemy.Detection.GetTargetPosition(), Context.Enemy.transform.position);
-            if(distance >= Context.Enemy.Data.ChaseDistance)
+            if (distance >= Context.Enemy.Data.ChaseDistance)
             {
                 NextState = EnemyStateMachine.EEnemyState.AGGRESSIVE;
             }
         }
 
         // If player in range, wait before re-attacking
-        if (pauseTimer > Context.Enemy.Data.PauseBetweenAttacksDuration )
+        if (pauseTimer > Context.Enemy.Data.PauseBetweenAttacksDuration)
         {
             pauseTimer = 0f;
 
@@ -54,5 +52,4 @@ public class EnemyAttackState : EnemyState
     {
         base.EnterState();
     }
-
 }
