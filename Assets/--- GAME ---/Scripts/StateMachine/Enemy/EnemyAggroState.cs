@@ -22,6 +22,9 @@ public class EnemyAggroState : EnemyState
         animationVelocity = 0.5f;
         blendTimer = 0.0f;
 
+        Context.Enemy.NavAgent.speed = Context.Enemy.Data.RunSpeed;
+        Context.Enemy.NavAgent.stoppingDistance = Context.Enemy.Data.StoppingDistance;
+
         //Context.Enemy.Animator.SetFloat(AnimatorStateHashes.Velocity, 1f);
     }
 
@@ -35,6 +38,7 @@ public class EnemyAggroState : EnemyState
 
             float distance = Vector3.Distance(playerPosition, Context.Enemy.transform.position);
 
+            Context.Enemy.transform.LookAt(playerPosition);
 
             if (distance > 15f) // distance to stop chase
             {
@@ -66,7 +70,8 @@ public class EnemyAggroState : EnemyState
                 NextState = EnemyStateMachine.EEnemyState.ATTACK;
             }
 
-            ManageAnimBlend();
+            Context.Enemy.Animator.SetFloat(AnimatorStateHashes.Velocity, Context.Enemy.NavAgent.velocity.magnitude / Context.Enemy.Data.RunSpeed);
+            //ManageAnimBlend();
         }
 
         //if(Context.Enemy.Detection.IsPlayerDetected())

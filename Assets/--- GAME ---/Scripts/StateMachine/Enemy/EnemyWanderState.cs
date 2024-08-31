@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UIElements;
 
 public class EnemyWanderState : EnemyState
@@ -16,6 +17,8 @@ public class EnemyWanderState : EnemyState
 
     private bool canPatrol = false;
 
+    private bool destinationReached = false;
+
     public EnemyWanderState(EnemyStateMachine context, EnemyStateMachine.EEnemyState key) : base(context, key)
     {
     }
@@ -29,9 +32,13 @@ public class EnemyWanderState : EnemyState
 
         if (waypoints.Count > 0)
         {
-            currentTarget = waypoints[currentIndex];
+            currentTarget = waypoints[0];// GetNextWaypoint(); // because first is spawn point
             canPatrol = true;
         }
+
+        //Context.Enemy.Animator.SetFloat(AnimatorStateHashes.Velocity, 0.5f);
+        Context.Enemy.NavAgent.speed = Context.Enemy.Data.WalkSpeed;
+        Context.Enemy.NavAgent.stoppingDistance = 0f;
     }
 
     public override void UpdateState()
@@ -40,12 +47,7 @@ public class EnemyWanderState : EnemyState
 
         if(canPatrol)
         {
-            Context.Enemy.NavAgent.SetDestination(currentTarget.position);
-
-            Vector3 position = Context.Enemy.transform.position;
-            position.y = 0f;
-
-            if (position != currentTarget.position)
+            if (!destinationReached)
             {
                 Context.Enemy.NavAgent.SetDestination(currentTarget.position);
             }
@@ -56,12 +58,14 @@ public class EnemyWanderState : EnemyState
                 if (patrolTimer >= Context.Enemy.Data.PatrolPauseDuration)
                 {
                     currentTarget = GetNextWaypoint();
-                    Context.Enemy.Animator.SetFloat(AnimatorStateHashes.Velocity, 0.5f);
+                    Context.Enemy.transform.LookAt(currentTarget);
+                    //Context.Enemy.Animator.SetFloat(AnimatorStateHashes.Velocity, 0.5f);
                     patrolTimer = 0.0f;
+                    destinationReached = false;
                 }
                 else
                 {
-                    Context.Enemy.Animator.SetFloat(AnimatorStateHashes.Velocity, 0.0f);
+                    //Context.Enemy.Animator.SetFloat(AnimatorStateHashes.Velocity, 0.0f);
                 }
             }
 
@@ -90,6 +94,8 @@ public class EnemyWanderState : EnemyState
             //        Context.Enemy.Animator.SetFloat(AnimatorStateHashes.Velocity, 0.0f);
             //    }
             //}
+
+            Context.Enemy.Animator.SetFloat(AnimatorStateHashes.Velocity, Context.Enemy.NavAgent.velocity.magnitude / Context.Enemy.Data.RunSpeed);
         }
     }
 
@@ -110,12 +116,18 @@ public class EnemyWanderState : EnemyState
         return waypoints[currentIndex];
     }
 
-
     public override void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent(out PlayerBase player))
         {
             NextState = EnemyStateMachine.EEnemyState.AGGRESSIVE;
+        }
+
+        if (!destinationReached && other.TryGetComponent(out Waypoint waypoint)
+            && waypoint.transform.position == currentTarget.position)
+        {
+            // Destination reached
+            destinationReached = true;
         }
     }
 

@@ -19,7 +19,7 @@ public class PlayerSpawnRange : MonoBehaviour
     {
         if (other.TryGetComponent(out EntityBase entity))
         {
-            entity.transform.parent.gameObject.SetActive(false);
+            //entity.transform.parent.gameObject.SetActive(false);
         }
     }
 }

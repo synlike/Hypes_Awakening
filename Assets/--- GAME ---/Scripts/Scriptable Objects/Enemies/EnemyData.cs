@@ -22,6 +22,8 @@ public class EnemyData : EntityData
     public float MovementPredictionTime = 1f;
     [Range(0.0f, 1f)]
     public float RepathingDelay = 0.1f;
+    [Range(0.0f, 10f)]
+    public float StoppingDistance = 2.0f;
 
     [Title("Attack Infos")]
     public float PauseBetweenAttacksDuration = 2.0f;
