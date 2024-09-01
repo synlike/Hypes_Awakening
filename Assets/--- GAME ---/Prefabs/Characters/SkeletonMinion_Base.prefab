@@ -382,6 +382,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f63d9330439ca54bb88adb6024a9ef7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Data>k__BackingField: {fileID: 11400000, guid: 7db852cda9128d04ca5e4eff1a1bd161, type: 2}
 --- !u!1 &1333008557484808629
 GameObject:
   m_ObjectHideFlags: 0
@@ -1915,6 +1916,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adddcd3d8b2539d4b8030eb7887e6dcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <MeleeAttack>k__BackingField: {fileID: 0}
+  <ThrowAttack>k__BackingField: {fileID: 0}
   <Data>k__BackingField: {fileID: 11400000, guid: 7db852cda9128d04ca5e4eff1a1bd161, type: 2}
 --- !u!114 &7433290731419368551
 MonoBehaviour:

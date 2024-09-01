@@ -14,14 +14,11 @@ public class RogueThrowState : EnemyState
     {
         base.EnterState();
 
-        if (Context.Enemy.Detection.IsPlayerDetected())
-        {
-            Context.Enemy.transform.LookAt(Context.Enemy.Detection.GetTargetPosition());
-        }
-
         NextState = EnemyStateMachine.EEnemyState.ATTACK;
 
         Context.Enemy.Animator.SetFloat(AnimatorStateHashes.Velocity, 0f);
+        Context.Enemy.NavAgent.isStopped = true;
+        Context.Enemy.NavAgent.velocity = Vector3.zero;
         Context.Enemy.Animator.SetTrigger(AnimatorStateHashes.Throw);
     }
 
@@ -37,6 +34,8 @@ public class RogueThrowState : EnemyState
             {
                 NextState = EnemyStateMachine.EEnemyState.AGGRESSIVE;
             }
+
+            Context.Enemy.transform.LookAt(Context.Enemy.Detection.GetTargetAnticaptedPosition());
         }
 
         // If player in range, wait before re-attacking

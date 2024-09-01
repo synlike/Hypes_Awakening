@@ -44,7 +44,7 @@ public class EntityBase : MonoBehaviour, IDamageable, IHealth
         CurrentAttackTaken = null;
     }
 
-    public void EnableAttack(EAttack_Types attack_type)
+    public virtual void EnableAttack(EAttack_Types attack_type)
     {
         AttackBase attack = GetAttackType(attack_type);
 
@@ -58,7 +58,7 @@ public class EntityBase : MonoBehaviour, IDamageable, IHealth
         attack.EnableAttack(this);
     }
 
-    public void DisableAttack(EAttack_Types attack_type)
+    public virtual void DisableAttack(EAttack_Types attack_type)
     {
         AttackBase attack = GetAttackType(attack_type);
 

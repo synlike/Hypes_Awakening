@@ -1994,6 +1994,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f63d9330439ca54bb88adb6024a9ef7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Data>k__BackingField: {fileID: 11400000, guid: ef5346efd8b74054d8b32a160edeeeb0, type: 2}
 --- !u!1 &5826707811979173570
 GameObject:
   m_ObjectHideFlags: 0

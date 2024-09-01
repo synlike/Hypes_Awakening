@@ -57,7 +57,8 @@ public class EnemyAggroState : EnemyState
                     }
                     else
                     {
-                        Context.Enemy.NavAgent.SetDestination(GetInterceptTargetPosition());
+                        //Context.Enemy.NavAgent.SetDestination(GetInterceptTargetPosition());
+                        Context.Enemy.NavAgent.SetDestination(Context.Enemy.Detection.GetTargetAnticaptedPosition());
                     }
 
                     RepathingTimer = 0.0f;

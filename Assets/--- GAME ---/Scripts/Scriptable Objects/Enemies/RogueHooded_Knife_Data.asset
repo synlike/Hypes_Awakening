@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: RogueHooded_Knife_Data
   m_EditorClassIdentifier: 
   MaxHealth: 5
-  PatrolPauseDuration: 4
+  PatrolPauseDuration: 2
   WalkSpeed: 1.8
   RunSpeed: 3
   UseMovementPrediction: 1

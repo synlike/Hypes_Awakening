@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class EnemyBase : EntityBase
 {
@@ -31,6 +32,11 @@ public class EnemyBase : EntityBase
     protected virtual void Update()
     {
 
+    }
+
+    public override void EnableAttack(EAttack_Types attack_type)
+    {
+        base.EnableAttack(attack_type);
     }
 
     public override void ApplyDamage(AttackInfos attackInfos)
