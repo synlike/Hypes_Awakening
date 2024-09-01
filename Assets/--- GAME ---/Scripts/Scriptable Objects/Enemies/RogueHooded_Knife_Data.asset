@@ -20,8 +20,8 @@ MonoBehaviour:
   MovementPredictionTreshold: 0
   MovementPredictionTime: 1
   RepathingDelay: 0.1
-  StoppingDistance: 2
-  PauseBetweenAttacksDuration: 3
+  StoppingDistance: 0
+  PauseBetweenAttacksDuration: 1
   ChaseDistance: 6
   CanResurrect: 0
   DeathDuration: 5

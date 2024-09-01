@@ -1,10 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UIElements;
 
 public class EnemyAggroState : EnemyState
 {
+    private EnemyBase enemy;
+    private NavMeshAgent agent;
+        
     private float animationVelocity = 0.5f;
     private float blendTimer = 0.0f;
 
@@ -18,47 +22,58 @@ public class EnemyAggroState : EnemyState
     {
         base.EnterState();
 
+        enemy = Context.Enemy;
+        agent = enemy.NavAgent;
+
         NextState = EnemyStateMachine.EEnemyState.AGGRESSIVE;
         animationVelocity = 0.5f;
         blendTimer = 0.0f;
 
-        Context.Enemy.NavAgent.speed = Context.Enemy.Data.RunSpeed;
-        Context.Enemy.NavAgent.stoppingDistance = Context.Enemy.Data.StoppingDistance;
+        agent.speed = Context.Enemy.Data.RunSpeed;
+        agent.stoppingDistance = Context.Enemy.Data.StoppingDistance;
 
         //Context.Enemy.Animator.SetFloat(AnimatorStateHashes.Velocity, 1f);
+
+        // DO A AGGRO STATE FOR DISTANCE ????? (MELEE MIGHT ALSO USE THIS)
+        if (enemy.Detection.IsPlayerDetected())
+        {
+            enemy.NavAgent.SetDestination(enemy.Detection.GetTarget4DirPosition(enemy.transform.position));
+        }
     }
 
     public override void UpdateState()
     {
-        // REDO WITH NAVMESH        
-
-        if (Context.Enemy.Detection.IsPlayerDetected())
+        if (enemy.Detection.IsPlayerDetected())
         {
-            Vector3 playerPosition = Context.Enemy.Detection.GetTargetPosition();
 
-            float distance = Vector3.Distance(playerPosition, Context.Enemy.transform.position);
+            Debug.DrawRay(enemy.transform.position, (enemy.Detection.GetTarget4DirPosition(enemy.transform.position) - enemy.transform.position), Color.red);
 
-            Context.Enemy.transform.LookAt(playerPosition);
+            Vector3 playerPosition = enemy.Detection.GetTargetPosition();
+
+            float distance = Vector3.Distance(playerPosition, enemy.transform.position);
 
             if (distance > 15f) // distance to stop chase
             {
-                Context.Enemy.Detection.EmptyTarget();
+                enemy.Detection.EmptyTarget();
                 NextState = EnemyStateMachine.EEnemyState.WANDER;
             }
-            else if (distance > Context.Enemy.Data.ChaseDistance) // distance to chase
+            else if (distance > enemy.Data.ChaseDistance || (agent.remainingDistance >= 0.05f)) // distance to chase
             {
-                if (RepathingTimer >= Context.Enemy.Data.RepathingDelay)
-                {
-                    Context.Enemy.NavAgent.isStopped = false;
 
-                    if(!Context.Enemy.Data.UseMovementPrediction)
+                enemy.transform.LookAt(playerPosition);
+                if (RepathingTimer >= enemy.Data.RepathingDelay)
+                {
+                    enemy.NavAgent.isStopped = false;
+
+                    if(!enemy.Data.UseMovementPrediction)
                     {
-                        Context.Enemy.NavAgent.SetDestination(playerPosition);
+                        enemy.NavAgent.SetDestination(playerPosition);
                     }
                     else
                     {
                         //Context.Enemy.NavAgent.SetDestination(GetInterceptTargetPosition());
-                        Context.Enemy.NavAgent.SetDestination(Context.Enemy.Detection.GetTargetAnticaptedPosition());
+                        //Context.Enemy.NavAgent.SetDestination(Context.Enemy.Detection.GetTargetAnticipatedPosition());
+                        enemy.NavAgent.SetDestination(enemy.Detection.GetTarget4DirPosition(enemy.transform.position));
                     }
 
                     RepathingTimer = 0.0f;
@@ -67,8 +82,10 @@ public class EnemyAggroState : EnemyState
             }
             else
             {
-                Context.Enemy.NavAgent.isStopped = true;
-                NextState = EnemyStateMachine.EEnemyState.ATTACK;
+                if(agent.remainingDistance < 0.05f)
+                {
+                    NextState = EnemyStateMachine.EEnemyState.ATTACK;
+                }
             }
 
             Context.Enemy.Animator.SetFloat(AnimatorStateHashes.Velocity, Context.Enemy.NavAgent.velocity.magnitude / Context.Enemy.Data.RunSpeed);

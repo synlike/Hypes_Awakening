@@ -89,8 +89,6 @@ public class EnemyBase : EntityBase
         rb.AddForce(Vector3.up * 50f, ForceMode.Impulse);
         rb.AddForce((dir * force), ForceMode.Impulse);
 
-        Debug.LogWarning("FORCE APPLIED : " + dir * force);
-
         Animator.SetTrigger(AnimatorStateHashes.Hit);
     }
 }

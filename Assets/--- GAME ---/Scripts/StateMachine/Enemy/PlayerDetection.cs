@@ -30,7 +30,7 @@ public class PlayerDetection : MonoBehaviour
         return _player.transform.position;
     }
 
-    public Vector3 GetTargetAnticaptedPosition()
+    public Vector3 GetTargetAnticipatedPosition()
     {
         Vector3 playerPosition = GetTargetPosition();
 
@@ -47,6 +47,25 @@ public class PlayerDetection : MonoBehaviour
         }
 
         return targetPosition;
+    }
+
+    public Vector3 GetTarget4DirPosition(Vector3 enemyPosition)
+    {
+        //Vector3 anticipatedPosition = GetTargetAnticipatedPosition();
+        Vector3 anticipatedPosition = GetTargetPosition();
+
+        Vector3 newPosition = enemyPosition;
+
+        if(anticipatedPosition.x - enemyPosition.x < anticipatedPosition.z - enemyPosition.z)
+        {
+            newPosition.x = anticipatedPosition.x;
+        }
+        else
+        {
+            newPosition.z = anticipatedPosition.z;
+        }
+
+        return newPosition;
     }
 
     public Vector3 GetTargetAverageVelocity()

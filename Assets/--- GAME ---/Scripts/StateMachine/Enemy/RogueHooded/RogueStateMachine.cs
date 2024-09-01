@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class RogueStateMachine : EnemyStateMachine
 {
+    public readonly GameEvent Throw = new();
+
     protected override void Awake()
     {
         States.Add(EEnemyState.WANDER, new EnemyWanderState(this, EEnemyState.WANDER));
@@ -13,5 +15,10 @@ public class RogueStateMachine : EnemyStateMachine
         States.Add(EEnemyState.DEATH, new EnemyDeathState(this, EEnemyState.DEATH));
 
         base.Awake();
+    }
+
+    public void OnThrow()
+    {
+        Throw.Invoke();
     }
 }
