@@ -46,8 +46,9 @@ public class AttackBase : MonoBehaviour
     {
 
     }
+
     public virtual void DisableAttack()
     {
-        gameObject.SetActive(false);
+
     }
 }

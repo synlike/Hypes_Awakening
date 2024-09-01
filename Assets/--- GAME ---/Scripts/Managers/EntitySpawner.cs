@@ -6,7 +6,7 @@ using UnityEngine.Rendering;
 
 [RequireComponent(typeof(SphereCollider))]
 [RequireComponent(typeof(Rigidbody))]
-public class EntitySpawner : MonoBehaviour, ISpawnable
+public class EntitySpawner : MonoBehaviour, ISpawn
 {
     [Title("Prefab")]
     [ValidateInput("MustBeEntity", "This field should be an entity prefab.")]
@@ -68,6 +68,7 @@ public class EntitySpawner : MonoBehaviour, ISpawnable
         {
             entity.transform.position = transform.position;
             entityGameObject.SetActive(true);
+            entity.InitializeSpawnable();
         }
     }
 }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6c848cc741f1c743b85a2bec5b43ab7, type: 3}
   m_Name: RogueHooded_Knife_Data
   m_EditorClassIdentifier: 
-  MaxHealth: 5
+  MaxHealth: 3
   PatrolPauseDuration: 2
   WalkSpeed: 1.8
   RunSpeed: 3
@@ -25,3 +25,4 @@ MonoBehaviour:
   ChaseDistance: 6
   CanResurrect: 0
   DeathDuration: 5
+  TimeBeforeDespawning: 1

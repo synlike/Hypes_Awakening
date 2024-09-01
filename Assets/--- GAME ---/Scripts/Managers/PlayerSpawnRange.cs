@@ -9,9 +9,9 @@ public class PlayerSpawnRange : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out ISpawnable spawnable))
+        if (other.TryGetComponent(out ISpawn spawn))
         {
-            spawnable.ActivateEntity();
+            spawn.ActivateEntity();
         }
     }
 

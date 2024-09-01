@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class EnemyBase : EntityBase
 {
@@ -46,11 +45,52 @@ public class EnemyBase : EntityBase
 
     public virtual void OnResurrection(){}
 
+    public override void InitializeSpawnable()
+    {
+        base.InitializeSpawnable();
+        DisablePhysics();
+    }
+
     public override void OnDeath()
     {
         base.OnDeath();
 
         rb.isKinematic = true;
         myCollider.enabled = false;
+    }
+    public override void EnablePhysics()
+    {
+        NavAgent.enabled = false;
+        rb.useGravity = true;
+        rb.isKinematic = false;
+    }
+
+    public override void DisablePhysics()
+    {
+        if(rb is not null && NavAgent is not null)
+        {
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.useGravity = false;
+            rb.isKinematic = true;
+            NavAgent.Warp(transform.position);
+            NavAgent.enabled = true;
+        }
+    }
+
+    public override void ApplyKnockback(float force)
+    {
+        EnablePhysics();
+
+        Vector3 dir = (transform.position - CurrentAttackTaken.Origin.position).normalized;
+
+        transform.LookAt(CurrentAttackTaken.Origin);
+
+        rb.AddForce(Vector3.up * 50f, ForceMode.Impulse);
+        rb.AddForce((dir * force), ForceMode.Impulse);
+
+        Debug.LogWarning("FORCE APPLIED : " + dir * force);
+
+        Animator.SetTrigger(AnimatorStateHashes.Hit);
     }
 }

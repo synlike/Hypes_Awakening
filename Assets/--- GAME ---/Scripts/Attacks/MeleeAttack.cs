@@ -4,15 +4,19 @@ using UnityEngine;
 
 public class MeleeAttack : AttackBase
 {
-    // Start is called before the first frame update
-    void Start()
+
+    public override void EnableAttack(EntityBase origin)
     {
-        
+
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void DisableAttack()
     {
-        
+        gameObject.SetActive(false);
+    }
+
+    protected override void OnTriggerEnter(Collider other)
+    {
+        base.OnTriggerEnter(other);
     }
 }

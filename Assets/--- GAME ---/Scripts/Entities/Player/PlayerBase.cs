@@ -72,4 +72,12 @@ public class PlayerBase : EntityBase
             LastPositionTime = Time.time;
         }
     }
+
+    public override void EnablePhysics()
+    {
+    }
+
+    public override void DisablePhysics()
+    {
+    }
 }

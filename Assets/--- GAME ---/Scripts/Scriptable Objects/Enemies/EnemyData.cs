@@ -31,7 +31,9 @@ public class EnemyData : EntityData
 
     [Title("Death Infos")]
     public bool CanResurrect = false;
-    [ShowIf("CanResurrect")]
+    [ShowIf("CanResurrect")] 
     public float DeathDuration = 5.0f;
+    [HideIf("CanResurrect")]
+    public float TimeBeforeDespawning = 1f;
 
 }

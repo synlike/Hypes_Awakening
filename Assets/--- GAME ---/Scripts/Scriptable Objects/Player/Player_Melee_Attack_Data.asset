@@ -13,4 +13,6 @@ MonoBehaviour:
   m_Name: Player_Melee_Attack_Data
   m_EditorClassIdentifier: 
   Damage: 1
-  KnockbackAmount: 200
+  KnockbackAmount: 250
+  IsProjectile: 0
+  ProjectileSpeed: 8

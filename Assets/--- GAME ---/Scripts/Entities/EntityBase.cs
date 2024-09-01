@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EntityBase : MonoBehaviour, IDamageable, IHealth
+public class EntityBase : MonoBehaviour, IDamageable, IHealth, ISpawnable
 {
     [field: SerializeField] public MeleeAttack MeleeAttack { get; private set; }
     [field: SerializeField] public ThrowAttack ThrowAttack { get; private set; }
@@ -37,6 +37,11 @@ public class EntityBase : MonoBehaviour, IDamageable, IHealth
     public virtual void OnDeath()
     {
         // Stuff to do on death
+    }
+
+    public virtual void InitializeSpawnable()
+    {
+        CurrentHP = MaxHP;
     }
 
     public void NullifyCurrentAttackTaken()
@@ -87,4 +92,16 @@ public class EntityBase : MonoBehaviour, IDamageable, IHealth
 
         return attack;
     }
+
+    public virtual void EnablePhysics()
+    {
+    }
+
+    public virtual void DisablePhysics()
+    {
+    }
+    public virtual void ApplyKnockback(float force)
+    {
+    }
+
 }
