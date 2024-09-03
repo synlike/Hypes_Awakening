@@ -49,6 +49,7 @@ public class EnemyWanderState : EnemyState
         {
             if (!destinationReached)
             {
+                Context.Enemy.transform.LookAt(currentTarget);
                 Context.Enemy.NavAgent.SetDestination(currentTarget.position);
             }
             else
@@ -69,32 +70,8 @@ public class EnemyWanderState : EnemyState
                 }
             }
 
-            // REDO WITH NAVMESH
-
-            //Vector3 position = Context.Enemy.transform.position;
-            //position.y = 0f;
-
-            //if (position != currentTarget.position)
-            //{
-            //    Context.Enemy.transform.position = Vector3.MoveTowards(position, currentTarget.position, Context.Enemy.Data.WalkSpeed * Time.deltaTime);
-            //}
-            //else
-            //{
-            //    patrolTimer += Time.deltaTime;
-
-            //    if (patrolTimer >= Context.Enemy.Data.PatrolPauseDuration)
-            //    {
-            //        currentTarget = GetNextWaypoint();
-            //        Context.Enemy.transform.LookAt(currentTarget);
-            //        Context.Enemy.Animator.SetFloat(AnimatorStateHashes.Velocity, 0.5f);
-            //        patrolTimer = 0.0f;
-            //    }
-            //    else
-            //    {
-            //        Context.Enemy.Animator.SetFloat(AnimatorStateHashes.Velocity, 0.0f);
-            //    }
-            //}
-
+            //Context.Enemy.Animator.SetFloat(AnimatorStateHashes.VelocityX, Context.Enemy.NavAgent.velocity.normalized.x);
+            //Context.Enemy.Animator.SetFloat(AnimatorStateHashes.VelocityZ, Context.Enemy.NavAgent.velocity.normalized.z);
             Context.Enemy.Animator.SetFloat(AnimatorStateHashes.Velocity, Context.Enemy.NavAgent.velocity.magnitude / Context.Enemy.Data.RunSpeed);
         }
     }

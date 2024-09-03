@@ -15,14 +15,15 @@ MonoBehaviour:
   MaxHealth: 3
   PatrolPauseDuration: 2
   WalkSpeed: 1.8
-  RunSpeed: 3
+  RunSpeed: 4
   UseMovementPrediction: 1
   MovementPredictionTreshold: 0
   MovementPredictionTime: 1
   RepathingDelay: 0.1
   StoppingDistance: 0
   PauseBetweenAttacksDuration: 1
-  ChaseDistance: 6
+  ChaseDistance: 8
+  AttackDistance: 3.5
   CanResurrect: 0
   DeathDuration: 5
   TimeBeforeDespawning: 1

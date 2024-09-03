@@ -21,7 +21,11 @@ public class RogueThrowState : EnemyState
 
         ((RogueStateMachine)Context).Throw.Add(OnThrow);
 
+        Context.Enemy.NavAgent.updateRotation = false;
+
         Context.Enemy.Animator.SetTrigger(AnimatorStateHashes.Throw);
+
+        Context.Enemy.transform.LookAt(Context.Enemy.Detection.GetTargetPosition());
     }
 
     private void OnThrow()
@@ -38,7 +42,7 @@ public class RogueThrowState : EnemyState
         {
             if (!isThrowing)
             {
-                Context.Enemy.NavAgent.SetDestination(Context.Enemy.Detection.GetTarget4DirPosition(Context.Enemy.transform.position));
+                //Context.Enemy.NavAgent.SetDestination(Context.Enemy.Detection.GetTarget4DirPosition(Context.Enemy.transform.position));
             }
             else
             {

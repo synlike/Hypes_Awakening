@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,6 +6,10 @@ using UnityEngine;
 
 public abstract class StateManager<EState> : MonoBehaviour where EState : Enum
 {
+
+    [ReadOnly]
+    public EState CurrentStateDebug;
+
     public Dictionary<EState, BaseState<EState>> States { get; protected set; } = new Dictionary<EState, BaseState<EState>>();
     protected BaseState<EState> CurrentState;
 
@@ -13,6 +18,7 @@ public abstract class StateManager<EState> : MonoBehaviour where EState : Enum
     void Start()
     {
         CurrentState.EnterState();
+        CurrentStateDebug = CurrentState.StateKey;
     }
 
     void Update()
@@ -26,6 +32,7 @@ public abstract class StateManager<EState> : MonoBehaviour where EState : Enum
         else if (!IsSwitchingState)
         {
             SwitchState(nextStateKey);
+            CurrentStateDebug = CurrentState.StateKey;
         }
     }
 

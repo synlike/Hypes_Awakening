@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
@@ -37,7 +38,8 @@ public class EnemyAggroState : EnemyState
         // DO A AGGRO STATE FOR DISTANCE ????? (MELEE MIGHT ALSO USE THIS)
         if (enemy.Detection.IsPlayerDetected())
         {
-            enemy.NavAgent.SetDestination(enemy.Detection.GetTarget4DirPosition(enemy.transform.position));
+            //enemy.NavAgent.SetDestination(enemy.Detection.GetTarget4DirPosition(enemy.transform.position)); 
+            enemy.NavAgent.SetDestination(enemy.Detection.GetTarget4DirMinimumPosition(enemy.transform.position, enemy.Data.AttackDistance));
         }
     }
 
@@ -45,39 +47,31 @@ public class EnemyAggroState : EnemyState
     {
         if (enemy.Detection.IsPlayerDetected())
         {
-
-            Debug.DrawRay(enemy.transform.position, (enemy.Detection.GetTarget4DirPosition(enemy.transform.position) - enemy.transform.position), Color.red);
-
             Vector3 playerPosition = enemy.Detection.GetTargetPosition();
 
             float distance = Vector3.Distance(playerPosition, enemy.transform.position);
 
-            if (distance > 15f) // distance to stop chase
+            if (distance > enemy.Data.ChaseDistance) // distance to stop chase
             {
                 enemy.Detection.EmptyTarget();
                 NextState = EnemyStateMachine.EEnemyState.WANDER;
             }
-            else if (distance > enemy.Data.ChaseDistance || (agent.remainingDistance >= 0.05f)) // distance to chase
+            else if (agent.hasPath && agent.remainingDistance >= 0.05f) // distance to chase
             {
+                agent.updateRotation = false;
 
-                enemy.transform.LookAt(playerPosition);
+                Vector3 goToPosition = enemy.Detection.GetTarget4DirMinimumPosition(enemy.transform.position, enemy.Data.AttackDistance);
+
+                Context.Enemy.transform.LookAt(goToPosition);
+
                 if (RepathingTimer >= enemy.Data.RepathingDelay)
                 {
                     enemy.NavAgent.isStopped = false;
 
-                    if(!enemy.Data.UseMovementPrediction)
-                    {
-                        enemy.NavAgent.SetDestination(playerPosition);
-                    }
-                    else
-                    {
-                        //Context.Enemy.NavAgent.SetDestination(GetInterceptTargetPosition());
-                        //Context.Enemy.NavAgent.SetDestination(Context.Enemy.Detection.GetTargetAnticipatedPosition());
-                        enemy.NavAgent.SetDestination(enemy.Detection.GetTarget4DirPosition(enemy.transform.position));
-                    }
-
+                    enemy.NavAgent.SetDestination(goToPosition);
                     RepathingTimer = 0.0f;
                 }
+
                 RepathingTimer += Time.deltaTime;
             }
             else
@@ -88,9 +82,14 @@ public class EnemyAggroState : EnemyState
                 }
             }
 
+            //Context.Enemy.Animator.SetFloat(AnimatorStateHashes.VelocityX, Context.Enemy.NavAgent.velocity.normalized.x);
+            //Context.Enemy.Animator.SetFloat(AnimatorStateHashes.VelocityZ, Context.Enemy.NavAgent.velocity.normalized.z);
             Context.Enemy.Animator.SetFloat(AnimatorStateHashes.Velocity, Context.Enemy.NavAgent.velocity.magnitude / Context.Enemy.Data.RunSpeed);
+
             //ManageAnimBlend();
         }
+
+        
 
         //if(Context.Enemy.Detection.IsPlayerDetected())
         //{
@@ -115,6 +114,7 @@ public class EnemyAggroState : EnemyState
         //    ManageAnimBlend();
         //}
     }
+
 
     private Vector3 GetInterceptTargetPosition()
     {

@@ -6,6 +6,8 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 public static class AnimatorStateHashes
 {
     public static readonly int Velocity = Animator.StringToHash(nameof(Velocity));
+    public static readonly int VelocityX = Animator.StringToHash(nameof(VelocityX));
+    public static readonly int VelocityZ = Animator.StringToHash(nameof(VelocityZ));
     public static readonly int Melee = Animator.StringToHash(nameof(Melee));
 
     public static readonly int Hit = Animator.StringToHash(nameof(Hit));

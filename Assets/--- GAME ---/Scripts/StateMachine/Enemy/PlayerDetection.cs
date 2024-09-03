@@ -49,20 +49,52 @@ public class PlayerDetection : MonoBehaviour
         return targetPosition;
     }
 
-    public Vector3 GetTarget4DirPosition(Vector3 enemyPosition)
+    public Vector3 GetTarget4DirMinimumPosition(Vector3 enemyPos, float minDistance)
     {
-        //Vector3 anticipatedPosition = GetTargetAnticipatedPosition();
-        Vector3 anticipatedPosition = GetTargetPosition();
+        Vector3 newPosition = GetTarget4DirPosition(enemyPos);
+        Vector3 targetPosition = GetTargetPosition();
 
-        Vector3 newPosition = enemyPosition;
-
-        if(anticipatedPosition.x - enemyPosition.x < anticipatedPosition.z - enemyPosition.z)
+        if(targetPosition.x != newPosition.x)  // Si pas d'obstacle sur pos
         {
-            newPosition.x = anticipatedPosition.x;
+            if (targetPosition.x > newPosition.x)
+            {
+                newPosition.x = targetPosition.x - minDistance;
+            }
+            else
+            {
+                newPosition.x = targetPosition.x + minDistance;
+            }
         }
         else
         {
-            newPosition.z = anticipatedPosition.z;
+            if (targetPosition.z > newPosition.z)
+            {
+                newPosition.z = targetPosition.z - minDistance;
+            }
+            else
+            {
+                newPosition.z = targetPosition.z + minDistance;
+            }
+        }
+
+        return newPosition;
+
+    }
+
+    public Vector3 GetTarget4DirPosition(Vector3 enemyPosition)
+    {
+        //Vector3 anticipatedPosition = GetTargetAnticipatedPosition();
+        Vector3 targetPosition = GetTargetPosition();
+
+        Vector3 newPosition = enemyPosition;
+
+        if(Mathf.Abs(targetPosition.x - enemyPosition.x) < Mathf.Abs(targetPosition.z - enemyPosition.z))
+        {
+            newPosition.x = targetPosition.x;
+        }
+        else
+        {
+            newPosition.z = targetPosition.z;
         }
 
         return newPosition;
